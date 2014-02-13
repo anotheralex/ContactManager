@@ -4,21 +4,45 @@
 * Contacts have an ID (unique), a name (probably unique, but maybe
 * not), and notes that the user may want to save about them
 */
-public interface Contact {
+public class ContactImpl implements Contact {
+
+	private int id; // first contact has id 0
+	private String name;
+	private String notes;
+
+	// static field to generate and ensure unique IDs
+	private static count = 0;
+
+	/**
+	 * Constructor
+	 *
+	 * @param name contact name
+	 * @param notes notes about contact
+	 */
+	public class ContactImpl(String name, String notes) {
+		this.id = count;
+		count++;
+		this.name = name;
+		this.notes = notes;
+	}
 
 	/**
 	* Returns the ID of the contact
 	*
 	* @return the ID of the contact
 	*/
-	int getId();
+	public int getId() {
+		return this.id;
+	}
 	
 	/**
 	* Returns the name of the contact
 	*
 	* @return the name of the contact
 	*/
-	String getName();
+	public String getName() {
+		return this.name;
+	}
 	
 	/**
 	* Returns our notes about the contact, if any
@@ -28,7 +52,12 @@ public interface Contact {
 	*
 	* @return a string with notes about the contact, maybe empty.
 	*/
-	String getNotes();
+	public String getNotes() {
+		if (this.notes == null) {
+			return "";
+		}
+		return this.notes;
+	}
 	
 	/**
 	* Add notes about the contact
