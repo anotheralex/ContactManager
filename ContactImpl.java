@@ -11,7 +11,19 @@ public class ContactImpl implements Contact {
 	private String notes;
 
 	// static field to generate and ensure unique IDs
-	private static count = 0;
+	private static int count = 0;
+
+	/**
+	 * Constructor
+	 *
+	 * @param name contact name
+	 */
+	public ContactImpl(String name) {
+		this.id = count;
+		count++;
+		this.name = name;
+		this.notes = null;
+	}
 
 	/**
 	 * Constructor
@@ -19,7 +31,7 @@ public class ContactImpl implements Contact {
 	 * @param name contact name
 	 * @param notes notes about contact
 	 */
-	public class ContactImpl(String name, String notes) {
+	public ContactImpl(String name, String notes) {
 		this.id = count;
 		count++;
 		this.name = name;
@@ -64,5 +76,7 @@ public class ContactImpl implements Contact {
 	*
 	* @param note the notes to be added
 	*/
-	void addNotes(String note);
+	public void addNotes(String notes) {
+		this.notes = notes;
+	}
 }
