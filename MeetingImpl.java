@@ -10,7 +10,7 @@ import java.util.*;
 public class MeetingImpl implements Meeting {
 
 	private int id;
-	private Calender date;
+	private Calendar date;
 	private Set<Contact> contacts;
 	private Contact user;
 
