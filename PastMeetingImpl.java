@@ -3,7 +3,20 @@
 *
 * It includes your notes about what happened and what was agreed
 */
-public interface PastMeeting extends Meeting {
+public class PastMeetingImpl implements PastMeeting {
+
+	private String notes;
+
+	/**
+	 * Constructor
+	 *
+	 * creates a Meeting and includes notes
+	 */
+	public PastMeetingImpl(Set<Contact> contacts, Calendar date, String notes) {
+		super(contacts, date);
+		this.notes = notes;
+	}
+
 	/**
 	* Returns the notes from the meeting
 	*
@@ -11,5 +24,7 @@ public interface PastMeeting extends Meeting {
 	*
 	* @return the notes from the meeting
 	*/
-	String getNotes();
+	public String getNotes() {
+		return this.notes;
+	}
 }
