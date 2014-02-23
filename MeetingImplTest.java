@@ -11,14 +11,17 @@ import java.util.GregorianCalendar;
 public class MeetingImplTest {
 
 	private Meeting meeting;
+	private Set<Contact> contacts;
+	private Contact contact;
+	private Calendar date;
 
 	@Before
 	public void setup() {
-		Contact contact = new ContactImpl("Contact");
-		Set<Contact> contacts = new HashSet<Contact>();
+		contact = new ContactImpl("Contact");
+		contacts = new HashSet<Contact>();
 		contacts.add(contact);
 
-		Calendar date = new GregorianCalendar(2013, 01, 01);
+		date = new GregorianCalendar(2013, 01, 01);
 
 		meeting = new MeetingImpl(contacts, date);
 	}
@@ -49,7 +52,9 @@ public class MeetingImplTest {
 
 	@Test
 	public void getDateTest() {
-		//TODO
+		Calendar actual = meeting.getDate();
+		Calendar expected = date;
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -71,8 +76,6 @@ public class MeetingImplTest {
 		Set<Contact> expected = contacts1;
 
 		assertEquals(expected, actual);
-
-
 
 	}
 
