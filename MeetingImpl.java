@@ -1,14 +1,15 @@
 import java.util.Calendar;
 import java.util.Set;
+import java.util.*;
 
 /**
 * A class to represent meetings
 *
 * Meetings have unique IDs, scheduled date and a list of participating contacts
 */
-public interface Meeting {
+public class MeetingImpl implements Meeting {
 
-	private int Id;
+	private int id;
 	private Calender date;
 	private Set<Contact> contacts;
 	private Contact user;
@@ -16,13 +17,12 @@ public interface Meeting {
 	// counter to give out unique IDs
 	private static int count = 0;
 
-	public Meeting(Set<Contact> contacts, Calendar date) {
+	public MeetingImpl(Set<Contact> contacts, Calendar date) {
 		this.id = count;
 		count++;
 
 		this.contacts = new HashSet<Contact>();
-		this.contacts = contacts.clone();
-		this.contacts.add(this.user);
+		this.contacts = contacts;
 
 		this.date = date;
 	}
@@ -55,9 +55,6 @@ public interface Meeting {
 	* @return the details of people that attended the meeting.
 	*/
 	public Set<Contact> getContacts() {
-		Set<Contact> attendees = new HashSet<Contact>();
-		attendees = this.contacts.clone();
-		attendees.remove(user);
-		return attendees;
+		return this.contacts;
 	}
 }
