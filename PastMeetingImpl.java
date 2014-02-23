@@ -1,9 +1,10 @@
+import java.util.*;
 /**
 * A meeting that was held in the past
 *
 * It includes your notes about what happened and what was agreed
 */
-public class PastMeetingImpl implements PastMeeting {
+public class PastMeetingImpl extends MeetingImpl {
 
 	private String notes;
 

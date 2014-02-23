@@ -10,11 +10,11 @@ import java.util.GregorianCalendar;
 
 public class PastMeetingImplTest {
 
-	private PastMeeting meeting;
+	private PastMeetingImpl meeting;
 	private Set<Contact> contacts;
 	private Contact contact;
 	private Calendar date;
-	private String notes
+	private String notes;
 
 	@Before
 	public void setup() {
