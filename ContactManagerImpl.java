@@ -42,7 +42,9 @@ public class ContactManagerImpl implements ContactManager {
 	* 	or if any contact is unknown / non-existent
 	*/
 	public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
-		//TODO
+		Meeting meeting = new Meeting(contacts, date);
+		this.meetings.add(meeting);
+		return meeting.getId();
 	}
 	
 	/**
@@ -53,7 +55,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if there is a meeting with that ID happening in the future
 	*/
 	public PastMeeting getPastMeeting(int id) {
-		//TODO
+		for (Meeting meeting : meetings) {
+			// TODO make sure meeting is actually in the past
+			if (meeting.getId() == id) {
+				return (PastMeeting) meeting;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -64,7 +72,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if there is a meeting with that ID happening in the past
 	*/
 	public FutureMeeting getFutureMeeting(int id) {
-		//TODO
+		for (Meeting meeting : meetings) {
+			// TODO make sure is actually a FutureMeeting
+			if (meeting.getId() == id) {
+				return (FutureMeeting) meeting;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -74,7 +88,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @return the meeting with the requested ID, or null if there is none
 	*/
 	public Meeting getMeeting(int id) {
-		//TODO
+		for (Meeting meeting : meetings) {
+			// TODO make sure is actually a FutureMeeting
+			if (meeting.getId() == id) {
+				return (FutureMeeting) meeting;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -89,7 +109,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if the contact does not exist
 	*/
 	public List<Meeting> getFutureMeetingList(Contact contact) {
-		//TODO
+		List<Meeting> meetingList = new ArrayList<Meeting>();
+		for (Meeting meeting : meetings) {
+			if (meeting.getContacts.contains(contact)) {
+				meetingList.add(meeting);
+			}
+		}
+		return meetingList;
 	}
 	
 	/**
@@ -104,7 +130,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @return the list of meetings
 	*/
 	public List<Meeting> getFutureMeetingList(Calendar date) {
-		//TODO
+		List<Meeting> meetingList = new ArrayList<Meeting>();
+		for (Meeting meeting : meetings) {
+			if (meeting.getDate().equals(date)) {
+				meetingList.add(meeting);
+			}
+		}
+		return meetingList;
 	}
 
 	/**
@@ -119,7 +151,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if the contact does not exist
 	*/
 	public List<PastMeeting> getPastMeetingList(Contact contact) {
-		//TODO
+		List<PastMeeting> meetingList = new ArrayList<PastMeeting>();
+		for (Meeting meeting : meetings) {
+			if (meeting.getContacts().contains(contact)) {
+				meetingList.add((PastMeeting) meeting);
+			}
+		}
+		return meetingList;
 	}
 	
 	/**
