@@ -5,7 +5,15 @@ import java.util.Set;
 /**
 * A class to manage your contacts and meetings
 */
-public interface ContactManager {
+public class ContactManagerImpl implements ContactManager {
+
+	private Set<Contact> contacts;
+	private Set<Meeting> meetings;
+
+	public ContactManagerImpl() {
+		this.contacts = new HashSet<Contact>();
+		this.meetings = new HashSet<Meeting>();
+	}
 
 	/**
 	* Add a new meeting to be held in the future
@@ -16,7 +24,9 @@ public interface ContactManager {
 	* @throws IllegalArgumentException if the meeting is set for a time in the past,
 	* 	or if any contact is unknown / non-existent
 	*/
-	int addFutureMeeting(Set<Contact> contacts, Calendar date);
+	public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
+		//TODO
+	}
 	
 	/**
 	* Returns the PAST meeting with the requested ID, or null if there is none
@@ -25,7 +35,9 @@ public interface ContactManager {
 	* @return the meeting with the requested ID, or null if there is none
 	* @throws IllegalArgumentException if there is a meeting with that ID happening in the future
 	*/
-	PastMeeting getPastMeeting(int id);
+	public PastMeeting getPastMeeting(int id) {
+		//TODO
+	}
 	
 	/**
 	* Returns the FUTURE meeting with the requested ID, or null if there is none
@@ -34,7 +46,9 @@ public interface ContactManager {
 	* @return the meeting with the requested ID, or null if there is none
 	* @throws IllegalArgumentException if there is a meeting with that ID happening in the past
 	*/
-	FutureMeeting getFutureMeeting(int id);
+	public FutureMeeting getFutureMeeting(int id) {
+		//TODO
+	}
 	
 	/**
 	* Returns the meeting with the requested ID, or null if there is none
@@ -42,7 +56,9 @@ public interface ContactManager {
 	* @param id the ID for the meeting
 	* @return the meeting with the requested ID, or null if there is none
 	*/
-	Meeting getMeeting(int id);
+	public Meeting getMeeting(int id) {
+		//TODO
+	}
 	
 	/**
 	* Returns the list of future meetings scheduled with this contact
@@ -55,7 +71,9 @@ public interface ContactManager {
 	* @return the list of future meeting(s) scheduled with this contact (maybe empty)
 	* @throws IllegalArgumentException if the contact does not exist
 	*/
-	List<Meeting> getFutureMeetingList(Contact contact);
+	public List<Meeting> getFutureMeetingList(Contact contact) {
+		//TODO
+	}
 	
 	/**
 	* Returns the list of meetings that are scheduled for, or that took
@@ -68,7 +86,9 @@ public interface ContactManager {
 	* @param date the date
 	* @return the list of meetings
 	*/
-	List<Meeting> getFutureMeetingList(Calendar date);
+	public List<Meeting> getFutureMeetingList(Calendar date) {
+		//TODO
+	}
 
 	/**
 	* Returns the list of past meetings in which this contact has participated
@@ -81,7 +101,9 @@ public interface ContactManager {
 	* @return the list of future meeting(s) scheduled with this contact (maybe empty)
 	* @throws IllegalArgumentException if the contact does not exist
 	*/
-	List<PastMeeting> getPastMeetingList(Contact contact);
+	public List<PastMeeting> getPastMeetingList(Contact contact) {
+		//TODO
+	}
 	
 	/**
 	* Create a new record for a meeting that took place in the past
@@ -93,7 +115,9 @@ public interface ContactManager {
 	* 	empty, or any of the contacts does not exist
 	* @throws NullPointerException if any of the arguments is null
 	*/
-	void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text);
+	public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) {
+		//TODO
+	}
 	
 	/**
 	* Add notes to a meeting
@@ -109,7 +133,9 @@ public interface ContactManager {
 	* @throws IllegalStateException if the meeting is set for a date in the future
 	* @throws NullPointerException if the notes are null
 	*/
-	void addMeetingNotes(int id, String text);
+	public void addMeetingNotes(int id, String text) {
+		//TODO
+	}
 	
 	/**
 	* Create a new contact with the specified name and notes
@@ -118,7 +144,13 @@ public interface ContactManager {
 	* @param notes notes to be added about the contact
 	* @throws NullPointerException if the name or the notes are null
 	*/
-	void addNewContact(String name, String notes);
+	public void addNewContact(String name, String notes) {
+		if (name == null || notes == null) {
+			throw new NullPointerException();
+		}
+		Contact newContact = new ContactImpl(name, notes);
+		this.contacts.add(newContact);
+	}
 	
 	/**
 	* Returns a list containing the contacts that correspond to the IDs
@@ -127,7 +159,9 @@ public interface ContactManager {
 	* @return a list containing the contacts that correspond to the IDs
 	* @throws IllegalArgumentException if any of the IDs does not correspond to a real contact
 	*/
-	Set<Contact> getContacts(int... ids);
+	public Set<Contact> getContacts(int... ids) {
+		//TODO
+	}
 	
 	/**
 	* Returns a list with the contacts whose name contains that string
@@ -136,7 +170,9 @@ public interface ContactManager {
 	* @return a list with the contacts whose name contains that string
 	* @throws NullPointerException if the parameter is null
 	*/
-	Set<Contact> getContacts(String name);
+	public Set<Contact> getContacts(String name) {
+		//TODO
+	}
 	
 	/**
 	* Save all data to disk.
@@ -144,5 +180,58 @@ public interface ContactManager {
 	* This method must be executed when the program is
 	* closed and when/if the user requests it
 	*/
-	void flush();
+	public static void flush() {
+		if (!contacts.isEmpty()) {
+			writeContacts();
+		}
+
+		if (!meetings.isEmpty()) {
+			writeMeetings();
+		}
+	}
+
+	private static void writeContacts() {
+		File contactsFile = new File("contacts.csv");
+		PrintWriter contactsOut = null;
+
+		try {
+			contactsOut = new PrintWriter(contactsFile);
+			for (Contact contact : this.contacts) {
+				String output = contact.getId() + ", " +
+								contact.getName() + ", " +
+								contact.getNotes() + "\n";
+				contactsOut.write(output);
+			}
+		} catch (FileNotFoundException ex) {
+			System.out.println("Could not write to file " + contactsFile + ".");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			contactsFile.close();
+		}
+	}
+
+	private static void writeMeetings() {
+
+		File meetingsFile = new File("meetings.csv");
+		PrintWriter meetingsOut = null;
+
+		try {
+			meetingsOut = new PrintWriter(meetingsFile);
+			for (Meeting meeting : this.meetings) {
+				String output = meeting.getId() + ", " +
+								meeting.getDatee() + ", " +
+								meeting.getContacts() + ", " +
+								meeting.getNotes() + "\n";
+				contactsOut.write(output);
+			}
+		} catch (FileNotFoundException ex) {
+			System.out.println("Could not write to file " + meetingsFile + ".");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			contactsFile.close();
+		}
+	}
+
 }
