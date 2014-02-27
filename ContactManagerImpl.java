@@ -1,6 +1,8 @@
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
+import java.util.*;
+import java.io.*;
 
 /**
 * A class to manage your contacts and meetings
@@ -13,6 +15,21 @@ public class ContactManagerImpl implements ContactManager {
 	public ContactManagerImpl() {
 		this.contacts = new HashSet<Contact>();
 		this.meetings = new HashSet<Meeting>();
+	}
+
+	public static void main(String[] args) {
+		ContactManagerImpl cm = new ContactManagerImpl();
+		cm.launch();
+	}
+
+	public void launch() {
+
+		System.out.println("Welcome to Contact Manager");
+		String name = "Test Name";
+		String notes = "Test Notes";
+		this.addNewContact(name, notes);
+		flush();
+
 	}
 
 	/**
@@ -180,7 +197,7 @@ public class ContactManagerImpl implements ContactManager {
 	* This method must be executed when the program is
 	* closed and when/if the user requests it
 	*/
-	public static void flush() {
+	public void flush() {
 		if (!contacts.isEmpty()) {
 			writeContacts();
 		}
@@ -190,7 +207,7 @@ public class ContactManagerImpl implements ContactManager {
 		}
 	}
 
-	private static void writeContacts() {
+	private void writeContacts() {
 		File contactsFile = new File("contacts.csv");
 		PrintWriter contactsOut = null;
 
@@ -204,14 +221,12 @@ public class ContactManagerImpl implements ContactManager {
 			}
 		} catch (FileNotFoundException ex) {
 			System.out.println("Could not write to file " + contactsFile + ".");
-		} catch (IOException ex) {
-			ex.printStackTrace();
 		} finally {
-			contactsFile.close();
+			contactsOut.close();
 		}
 	}
 
-	private static void writeMeetings() {
+	private void writeMeetings() {
 
 		File meetingsFile = new File("meetings.csv");
 		PrintWriter meetingsOut = null;
@@ -220,17 +235,13 @@ public class ContactManagerImpl implements ContactManager {
 			meetingsOut = new PrintWriter(meetingsFile);
 			for (Meeting meeting : this.meetings) {
 				String output = meeting.getId() + ", " +
-								meeting.getDatee() + ", " +
-								meeting.getContacts() + ", " +
-								meeting.getNotes() + "\n";
-				contactsOut.write(output);
+								meeting.getDate() + "\n";
+				meetingsOut.write(output);
 			}
 		} catch (FileNotFoundException ex) {
 			System.out.println("Could not write to file " + meetingsFile + ".");
-		} catch (IOException ex) {
-			ex.printStackTrace();
 		} finally {
-			contactsFile.close();
+			meetingsOut.close();
 		}
 	}
 
