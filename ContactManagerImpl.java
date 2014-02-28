@@ -23,13 +23,12 @@ public class ContactManagerImpl implements ContactManager {
 	}
 
 	public void launch() {
-
+		ContactManagerImpl cm = new ContactManagerImpl();
 		System.out.println("Welcome to Contact Manager");
 		String name = "Test Name";
 		String notes = "Test Notes";
 		this.addNewContact(name, notes);
 		flush();
-
 	}
 
 	/**
@@ -42,9 +41,13 @@ public class ContactManagerImpl implements ContactManager {
 	* 	or if any contact is unknown / non-existent
 	*/
 	public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
-		Meeting meeting = new Meeting(contacts, date);
-		this.meetings.add(meeting);
-		return meeting.getId();
+		if (date.before(Calendar.getInstance())) {
+			throw new IllegalArgumentException("Error. " + date + " is in the past."
+		} else {
+			Meeting meeting = new MeetingImpl(contacts, date);
+			this.meetings.add(meeting);
+			return meeting.getId();
+		}
 	}
 	
 	/**
@@ -111,7 +114,7 @@ public class ContactManagerImpl implements ContactManager {
 	public List<Meeting> getFutureMeetingList(Contact contact) {
 		List<Meeting> meetingList = new ArrayList<Meeting>();
 		for (Meeting meeting : meetings) {
-			if (meeting.getContacts.contains(contact)) {
+			if (meeting.getContacts().contains(contact)) {
 				meetingList.add(meeting);
 			}
 		}
@@ -215,7 +218,9 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if any of the IDs does not correspond to a real contact
 	*/
 	public Set<Contact> getContacts(int... ids) {
-		//TODO
+		// TODO replace this
+		Set<Contact> contacts = new HashSet<Contact>();
+		return contacts;
 	}
 	
 	/**
@@ -226,7 +231,9 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws NullPointerException if the parameter is null
 	*/
 	public Set<Contact> getContacts(String name) {
-		//TODO
+		// TODO replace this
+		Set<Contact> contacts = new HashSet<Contact>();
+		return contacts;
 	}
 	
 	/**
@@ -236,50 +243,21 @@ public class ContactManagerImpl implements ContactManager {
 	* closed and when/if the user requests it
 	*/
 	public void flush() {
-		if (!contacts.isEmpty()) {
-			writeContacts();
-		}
-
-		if (!meetings.isEmpty()) {
-			writeMeetings();
-		}
-	}
-
-	private void writeContacts() {
-		File contactsFile = new File("contacts.csv");
-		PrintWriter contactsOut = null;
+		File file = new File("contacts.csv");
+		PrintWriter out = null;
 
 		try {
-			contactsOut = new PrintWriter(contactsFile);
+			out = new PrintWriter(file);
 			for (Contact contact : this.contacts) {
-				String output = contact.getId() + ", " +
-								contact.getName() + ", " +
+				String output = contact.getId() + "," +
+								contact.getName() + "." +
 								contact.getNotes() + "\n";
-				contactsOut.write(output);
+				out.write(output);
 			}
 		} catch (FileNotFoundException ex) {
-			System.out.println("Could not write to file " + contactsFile + ".");
+			System.out.println("Could not write to file " + file + ".");
 		} finally {
-			contactsOut.close();
-		}
-	}
-
-	private void writeMeetings() {
-
-		File meetingsFile = new File("meetings.csv");
-		PrintWriter meetingsOut = null;
-
-		try {
-			meetingsOut = new PrintWriter(meetingsFile);
-			for (Meeting meeting : this.meetings) {
-				String output = meeting.getId() + ", " +
-								meeting.getDate() + "\n";
-				meetingsOut.write(output);
-			}
-		} catch (FileNotFoundException ex) {
-			System.out.println("Could not write to file " + meetingsFile + ".");
-		} finally {
-			meetingsOut.close();
+			out.close();
 		}
 	}
 
