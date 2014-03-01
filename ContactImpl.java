@@ -39,6 +39,20 @@ public class ContactImpl implements Contact {
 	}
 
 	/**
+	 * Constructor
+	 *
+	 * @param di contact id
+	 * @param name contact name
+	 * @param notes notes about contact
+	 */
+	public ContactImpl(int id, String name, String notes) {
+		this.id = id;
+		this.name = name;
+		this.notes = notes;
+	}
+
+
+	/**
 	* Returns the ID of the contact
 	*
 	* @return the ID of the contact
