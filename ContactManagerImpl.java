@@ -14,8 +14,8 @@ public class ContactManagerImpl implements ContactManager {
 	private static final String FILENAME = "contacts.txt";
 
 	// persistent IDs for contacts and meetings
-	private static int contactId;
-	private static int meetingId;
+	private int contactId;
+	private int meetingId;
 
 	public ContactManagerImpl() {
 		System.out.println("Creating new Contact Manager...");
@@ -28,43 +28,11 @@ public class ContactManagerImpl implements ContactManager {
 		 */
 		File file = new File(FILENAME);
 		if (file.exists()) {
-			load(file);
+			this.load(file);
 		} else {
-			contactId = 0;
-			meetingId = 0;
+			this.contactId = 0;
+			this.meetingId = 0;
 		}
-	}
-
-	/**
-	 * Recover contactId and meeting Id
-	 *
-	 * @param file File object to search for IDs
-	 */
-	private void recoverIds(File file) {
-		BufferedReader in = null;
-		try {
-			in = new BufferedReader(new FileReader(file));
-			String line;
-			String[] fields;
-
-			while ((line = in.readLine()) != null) {
-				fields = line.split("|");
-				switch (fields[0]) {
-					case "contactId":
-						contactId = Integer.parseInt(fields[1]);
-						break;
-					case "meetingId":
-						meetingId = Integer.parseInt(fields[1]);
-						break;
-				}
-	
-			}
-		} catch (IOException ex) {
-				ex.printStackTrace();
-		} finally {
-			closeReader(in);
-		}
-
 	}
 
 	/**
@@ -81,13 +49,17 @@ public class ContactManagerImpl implements ContactManager {
 			String[] fields;
 
 			while ((line = in.readLine()) != null) {
-				fields = line.split("|");
+				System.out.println(line);
+
+				// using | delimeter to allow commas in notes
+				fields = line.split("\\|");
+				System.out.println(fields[0]);
 				switch (fields[0]) {
 					case "contactId":
-						contactId = Integer.parseInt(fields[1]);
+						this.contactId = Integer.parseInt(fields[1]);
 						break;
 					case "meetingId":
-						meetingId = Integer.parseInt(fields[1]);
+						this.meetingId = Integer.parseInt(fields[1]);
 						break;
 					case "contact":
 						Contact contact = new ContactImpl(
@@ -358,15 +330,19 @@ public class ContactManagerImpl implements ContactManager {
 		try {
 			out = new PrintWriter(file);
 
-			// save contactId
-			output = "contactId" + "|" + contactId + "\n";
+			// save contactId and meetingId
+			// use | delimeter to avoid problems with commas in notes
+			output = "contactId" + "|" + this.contactId + "\n";
+			out.write(output);
+
+			output = "meetingId" + "|" + this.meetingId + "\n";
 			out.write(output);
 
 			for (Contact contact : this.contacts) {
 				output = "contact" + "|" +
-								contact.getId() + "|" +
-								contact.getName() + "|" +
-								contact.getNotes() + "\n";
+					contact.getId() + "|" +
+					contact.getName() + "|" +
+					contact.getNotes() + "\n";
 				out.write(output);
 			}
 		} catch (FileNotFoundException ex) {
