@@ -7,3 +7,6 @@
 
 # Vim smp files #
 *.swp
+
+# Txt tiles
+*.txt
