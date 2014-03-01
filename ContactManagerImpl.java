@@ -13,8 +13,35 @@ public class ContactManagerImpl implements ContactManager {
 	private Set<Meeting> meetings;
 
 	public ContactManagerImpl() {
+		System.out.println("Creating new Contact Manager...");
 		this.contacts = new HashSet<Contact>();
 		this.meetings = new HashSet<Meeting>();
+
+		File file = new File("contacts.txt");
+		BufferedReader in = null;
+
+		if (file.exists()) {
+			try {
+				in = new BufferedReader(new FileReader(file));
+				String line;
+				int count = 0;
+				System.out.println("Reading records...");
+				while ((line = in.readLine()) != null) {
+					count++;
+					System.out.println("Record " + count + ": " + line);
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			} finally {
+				try {
+					if (in != null) {
+						in.close();
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) {
@@ -23,12 +50,17 @@ public class ContactManagerImpl implements ContactManager {
 	}
 
 	public void launch() {
-		ContactManagerImpl cm = new ContactManagerImpl();
 		System.out.println("Welcome to Contact Manager");
-		String name = "Test Name";
-		String notes = "Test Notes";
-		this.addNewContact(name, notes);
-		flush();
+		this.addNewContact("First", "Notes 1");
+		this.addNewContact("Second", "Notes 2");
+		this.addNewContact("Third", "Notes 3");
+		this.flush();
+
+		List<Integer> demoList = new ArrayList<>();
+		demoList.add(1);
+		demoList.add(2);
+		System.out.println(demoList.toString());
+
 	}
 
 	/**
@@ -42,7 +74,7 @@ public class ContactManagerImpl implements ContactManager {
 	*/
 	public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
 		if (date.before(Calendar.getInstance())) {
-			throw new IllegalArgumentException("Error. " + date + " is in the past."
+			throw new IllegalArgumentException("Error. " + date + " is in the past.");
 		} else {
 			Meeting meeting = new MeetingImpl(contacts, date);
 			this.meetings.add(meeting);
@@ -243,7 +275,7 @@ public class ContactManagerImpl implements ContactManager {
 	* closed and when/if the user requests it
 	*/
 	public void flush() {
-		File file = new File("contacts.csv");
+		File file = new File("contacts.txt");
 		PrintWriter out = null;
 
 		try {
