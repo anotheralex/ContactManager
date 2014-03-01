@@ -13,8 +13,8 @@ public class PastMeetingImpl extends MeetingImpl {
 	 *
 	 * creates a Meeting and includes notes
 	 */
-	public PastMeetingImpl(Set<Contact> contacts, Calendar date, String notes) {
-		super(contacts, date);
+	public PastMeetingImpl(int id, Set<Contact> contacts, Calendar date, String notes) {
+		super(id, contacts, date);
 		this.notes = notes;
 	}
 
