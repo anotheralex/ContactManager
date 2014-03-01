@@ -9,22 +9,25 @@ import java.util.*;
 */
 public class MeetingImpl implements Meeting {
 
+	// TODO remove user
+	// implement PastMeeting as well?
 	private int id;
 	private Calendar date;
 	private Set<Contact> contacts;
 	private Contact user;
+	private String notes;
 
 	// counter to give out unique IDs
 	private static int count = 0;
 
-	public MeetingImpl(Set<Contact> contacts, Calendar date) {
-		this.id = count;
-		count++;
+	public MeetingImpl(int id, Set<Contact> contacts, Calendar date) {
+		this.id = id;
 
 		this.contacts = new HashSet<Contact>();
 		this.contacts = contacts;
 
 		this.date = date;
+		this.notes = "";
 	}
 
 	/**
