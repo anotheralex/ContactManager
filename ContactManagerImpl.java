@@ -11,36 +11,116 @@ public class ContactManagerImpl implements ContactManager {
 
 	private Set<Contact> contacts;
 	private Set<Meeting> meetings;
+	private static final String FILENAME = "contacts.txt";
+
+	// persistent IDs for contacts and meetings
+	private static int contactId;
+	private static int meetingId;
 
 	public ContactManagerImpl() {
 		System.out.println("Creating new Contact Manager...");
 		this.contacts = new HashSet<Contact>();
 		this.meetings = new HashSet<Meeting>();
-
-		File file = new File("contacts.txt");
-		BufferedReader in = null;
-
+	
+		/** Check if a file named FILENAME exists
+		 *	If it does load data
+		 *	If it does not set base contactId and meetingId
+		 */
+		File file = new File(FILENAME);
 		if (file.exists()) {
-			try {
-				in = new BufferedReader(new FileReader(file));
-				String line;
-				int count = 0;
-				System.out.println("Reading records...");
-				while ((line = in.readLine()) != null) {
-					count++;
-					System.out.println("Record " + count + ": " + line);
+			load(file);
+		} else {
+			contactId = 0;
+			meetingId = 0;
+		}
+	}
+
+	/**
+	 * Recover contactId and meeting Id
+	 *
+	 * @param file File object to search for IDs
+	 */
+	private void recoverIds(File file) {
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(new FileReader(file));
+			String line;
+			String[] fields;
+
+			while ((line = in.readLine()) != null) {
+				fields = line.split("|");
+				switch (fields[0]) {
+					case "contactId":
+						contactId = Integer.parseInt(fields[1]);
+						break;
+					case "meetingId":
+						meetingId = Integer.parseInt(fields[1]);
+						break;
 				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			} finally {
-				try {
-					if (in != null) {
-						in.close();
-					}
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
+	
 			}
+		} catch (IOException ex) {
+				ex.printStackTrace();
+		} finally {
+			closeReader(in);
+		}
+
+	}
+
+	/**
+	 * Recover contactId, meeting Id
+	 * Rebuild Contact and Meeting objects
+	 *
+	 * @param file File object to search for data
+	 */
+	private void load(File file) {
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(new FileReader(file));
+			String line;
+			String[] fields;
+
+			while ((line = in.readLine()) != null) {
+				fields = line.split("|");
+				switch (fields[0]) {
+					case "contactId":
+						contactId = Integer.parseInt(fields[1]);
+						break;
+					case "meetingId":
+						meetingId = Integer.parseInt(fields[1]);
+						break;
+					case "contact":
+						Contact contact = new ContactImpl(
+								Integer.parseInt(fields[1]),
+								fields[2],
+								fields[3]);
+						this.contacts.add(contact);
+						break;
+					case "meeting":
+						break;
+				}
+	
+			}
+		} catch (IOException ex) {
+				ex.printStackTrace();
+		} finally {
+			closeReader(in);
+		}
+
+	}
+
+	/**
+	 * Closes a Reader object
+	 *
+	 * @param reader Reader object to close
+	 */
+	private static void closeReader(Reader reader) {
+		try {
+			if (reader != null) {
+				reader.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
 
@@ -55,11 +135,6 @@ public class ContactManagerImpl implements ContactManager {
 		this.addNewContact("Second", "Notes 2");
 		this.addNewContact("Third", "Notes 3");
 		this.flush();
-
-		List<Integer> demoList = new ArrayList<>();
-		demoList.add(1);
-		demoList.add(2);
-		System.out.println(demoList.toString());
 
 	}
 
@@ -238,8 +313,9 @@ public class ContactManagerImpl implements ContactManager {
 		if (name == null || notes == null) {
 			throw new NullPointerException();
 		}
-		Contact newContact = new ContactImpl(name, notes);
+		Contact newContact = new ContactImpl(contactId, name, notes);
 		this.contacts.add(newContact);
+		contactId++;
 	}
 	
 	/**
@@ -275,14 +351,21 @@ public class ContactManagerImpl implements ContactManager {
 	* closed and when/if the user requests it
 	*/
 	public void flush() {
-		File file = new File("contacts.txt");
+		File file = new File(FILENAME);
 		PrintWriter out = null;
+		String output;
 
 		try {
 			out = new PrintWriter(file);
+
+			// save contactId
+			output = "contactId" + "|" + contactId + "\n";
+			out.write(output);
+
 			for (Contact contact : this.contacts) {
-				String output = contact.getId() + "," +
-								contact.getName() + "." +
+				output = "contact" + "|" +
+								contact.getId() + "|" +
+								contact.getName() + "|" +
 								contact.getNotes() + "\n";
 				out.write(output);
 			}
