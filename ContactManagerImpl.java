@@ -13,7 +13,11 @@ public class ContactManagerImpl implements ContactManager {
 	private Set<Meeting> meetings;
 	private static final String FILENAME = "contacts.txt";
 
-	// persistent IDs for contacts and meetings
+	/*
+	 * Persistent IDs for contacts and meetings
+	 * these variables serve as for ID for the next created value
+	 * they are restored to their previous values when loading previous data
+	 */
 	private int contactId;
 	private int meetingId;
 
@@ -22,9 +26,9 @@ public class ContactManagerImpl implements ContactManager {
 		this.contacts = new HashSet<Contact>();
 		this.meetings = new HashSet<Meeting>();
 	
-		/** Check if a file named FILENAME exists
-		 *	If it does load data
-		 *	If it does not set base contactId and meetingId
+		/* Check if a file named FILENAME exists
+		 * If it does load data
+		 * If it does not set base contactId and meetingId
 		 */
 		File file = new File(FILENAME);
 		if (file.exists()) {
@@ -36,8 +40,7 @@ public class ContactManagerImpl implements ContactManager {
 	}
 
 	/**
-	 * Recover contactId, meeting Id
-	 * Rebuild Contact and Meeting objects
+	 * Recover contactId, meeting Id and rebuild contact and meeting lists
 	 *
 	 * @param file File object to search for data
 	 */
@@ -103,9 +106,21 @@ public class ContactManagerImpl implements ContactManager {
 
 	public void launch() {
 		System.out.println("Welcome to Contact Manager");
+
 		this.addNewContact("First", "Notes 1");
 		this.addNewContact("Second", "Notes 2");
 		this.addNewContact("Third", "Notes 3");
+		
+		Contact contactOne = new ContactImpl(98, "Alex", "Test 98");
+		Contact contactTwo = new ContactImpl(99, "Bean", "Test 99");
+
+		Set<Contact> attendees = new HashSet<>();
+		attendees.add(contactOne);
+		attendees.add(contactTwo);
+
+		PastMeeting meeting = new PastMeetingImpl(1, attendees, Calendar.getInstance(), "Some notes");
+		this.meetings.add(meeting);
+		
 		this.flush();
 
 	}
@@ -123,7 +138,8 @@ public class ContactManagerImpl implements ContactManager {
 		if (date.before(Calendar.getInstance())) {
 			throw new IllegalArgumentException("Error. " + date + " is in the past.");
 		} else {
-			Meeting meeting = new MeetingImpl(contacts, date);
+			//TODO check this
+			Meeting meeting = new MeetingImpl(this.meetingId, contacts, date);
 			this.meetings.add(meeting);
 			return meeting.getId();
 		}
@@ -330,8 +346,15 @@ public class ContactManagerImpl implements ContactManager {
 		try {
 			out = new PrintWriter(file);
 
-			// save contactId and meetingId
-			// use | delimeter to avoid problems with commas in notes
+			/*
+			 * contactId format: "contactId"|contactId
+			 * meetingId format: "meetingId"|meetingId
+			 * contact format: "contact"|id|name|notes
+			 * meeting format: "meeting"|id|date|notes|attendees
+			 *		where attendees: contact,contact,...,contact
+			 * use | delimeter to avoid problems with commas in notes
+			 */
+			// 
 			output = "contactId" + "|" + this.contactId + "\n";
 			out.write(output);
 
@@ -343,6 +366,17 @@ public class ContactManagerImpl implements ContactManager {
 					contact.getId() + "|" +
 					contact.getName() + "|" +
 					contact.getNotes() + "\n";
+				out.write(output);
+			}
+			for (Meeting meeting : this.meetings) {
+				output = "meeting" + "|" +
+					meeting.getId() + "|" +
+					meeting.getDate().toString() + "|" +
+					meeting.getNotes() + "|";
+				for (Contact contact : meeting.getContacts()) {
+					// trailing comma dealt with at data load
+					output = output + contact.getId() + ",";
+				}
 				out.write(output);
 			}
 		} catch (FileNotFoundException ex) {
