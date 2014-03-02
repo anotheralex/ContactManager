@@ -284,6 +284,7 @@ public class ContactManagerImpl implements ContactManager {
 	* @return the list of meetings
 	*/
 	public List<Meeting> getFutureMeetingList(Calendar date) {
+		// TODO list is not sorted chronologically whatever that means
 		List<Meeting> result = new ArrayList<>();
 		for (Meeting meeting : this.meetings) {
 			if (meeting.getDate().equals(date)) {
@@ -305,6 +306,7 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if the contact does not exist
 	*/
 	public List<PastMeeting> getPastMeetingList(Contact contact) {
+		// TODO list is not sorted chronologically whatever that means
 		List<PastMeeting> result = new ArrayList<>();
 
 		if (!this.contacts.contains(contact)) {
@@ -465,9 +467,6 @@ public class ContactManagerImpl implements ContactManager {
 			for (Meeting meeting : this.meetings) {
 				// downcast to PastMeeting to access getNotes() method
 				PastMeeting pastMeeting = (PastMeeting) meeting;
-
-				// prepare date format
-				//
 
 				output = "meeting" + "|" +
 					pastMeeting.getId() + "|" +
