@@ -3,6 +3,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.*;
 import java.io.*;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
 * A class to manage your contacts and meetings
@@ -72,6 +75,15 @@ public class ContactManagerImpl implements ContactManager {
 						this.contacts.add(contact);
 						break;
 					case "meeting":
+						/*
+						int[] attendeeIds = fields[4].split(",");
+						Set<Contact> attendees = new HashSet<>();
+
+						Meeting meeting = new MeetingImpl(
+								Integer.parseInt(fields[1]),
+								fields[2],
+								fields[3]
+						*/
 						break;
 				}
 	
@@ -118,8 +130,8 @@ public class ContactManagerImpl implements ContactManager {
 		attendees.add(contactOne);
 		attendees.add(contactTwo);
 
-		Meeting meeting = new MeetingImpl(1, attendees, Calendar.getInstance());
-		this.meetings.add(meeting);
+		//Meeting meeting = new MeetingImpl(this.meetingId, attendees, Calendar.getInstance());
+		this.addNewPastMeeting(attendees, Calendar.getInstance(), "Past notes");
 		
 		this.flush();
 
@@ -136,11 +148,12 @@ public class ContactManagerImpl implements ContactManager {
 	*/
 	public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
 		if (date.before(Calendar.getInstance())) {
-			throw new IllegalArgumentException("Error. " + date + " is in the past.");
+			throw new IllegalArgumentException("Error. Date is in the past.");
 		} else {
 			//TODO check this
 			FutureMeeting meeting = new MeetingImpl(this.meetingId, contacts, date);
 			this.meetings.add((Meeting) meeting);
+			this.meetingId++;
 			return meeting.getId();
 		}
 	}
@@ -269,8 +282,15 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws NullPointerException if any of the arguments is null
 	*/
 	public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) {
-		//TODO
-	}
+		if (contacts == null || date == null || text == null) {
+			throw new NullPointerException();
+		} else {
+			//TODO check this
+			PastMeeting meeting = new MeetingImpl(this.meetingId, contacts, date);
+			this.meetings.add((Meeting) meeting);
+			this.meetingId++;
+		}
+}
 	
 	/**
 	* Add notes to a meeting
@@ -303,7 +323,7 @@ public class ContactManagerImpl implements ContactManager {
 		}
 		Contact newContact = new ContactImpl(contactId, name, notes);
 		this.contacts.add(newContact);
-		contactId++;
+		this.contactId++;
 	}
 	
 	/**
@@ -342,6 +362,7 @@ public class ContactManagerImpl implements ContactManager {
 		File file = new File(FILENAME);
 		PrintWriter out = null;
 		String output;
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		try {
 			out = new PrintWriter(file);
@@ -368,11 +389,17 @@ public class ContactManagerImpl implements ContactManager {
 					contact.getNotes() + "\n";
 				out.write(output);
 			}
+
 			for (Meeting meeting : this.meetings) {
+				// downcast to PastMeeting to access getNotes() method
 				PastMeeting pastMeeting = (PastMeeting) meeting;
+
+				// prepare date format
+				//
+
 				output = "meeting" + "|" +
 					pastMeeting.getId() + "|" +
-					pastMeeting.getDate().toString() + "|" +
+					dateFormat.format(pastMeeting.getDate().getTime()) + "|" +
 					pastMeeting.getNotes() + "|";
 				for (Contact contact : pastMeeting.getContacts()) {
 					// trailing comma dealt with at data load
@@ -380,6 +407,7 @@ public class ContactManagerImpl implements ContactManager {
 				}
 				out.write(output);
 			}
+
 		} catch (FileNotFoundException ex) {
 			System.out.println("Could not write to file " + file + ".");
 		} finally {
