@@ -7,25 +7,16 @@ import java.util.*;
 *
 * Meetings have unique IDs, scheduled date and a list of participating contacts
 */
-public class MeetingImpl implements Meeting {
+public class MeetingImpl implements Meeting, PastMeeting, FutureMeeting {
 
-	// TODO remove user
-	// implement PastMeeting as well?
 	private int id;
 	private Calendar date;
 	private Set<Contact> contacts;
-	private Contact user;
 	private String notes;
-
-	// counter to give out unique IDs
-	private static int count = 0;
 
 	public MeetingImpl(int id, Set<Contact> contacts, Calendar date) {
 		this.id = id;
-
-		this.contacts = new HashSet<Contact>();
 		this.contacts = contacts;
-
 		this.date = date;
 		this.notes = "";
 	}
