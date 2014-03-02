@@ -315,6 +315,7 @@ public class ContactManagerImpl implements ContactManager {
 					meeting.getDate().before(Calendar.getInstance())) {
 						result.add((PastMeeting) meeting);
 				}
+			}
 		}
 		return result;
 	}
@@ -338,7 +339,7 @@ public class ContactManagerImpl implements ContactManager {
 			this.meetings.add((Meeting) meeting);
 			this.meetingId++;
 		}
-}
+	}
 	
 	/**
 	* Add notes to a meeting
