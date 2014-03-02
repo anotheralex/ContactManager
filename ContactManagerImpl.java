@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 /**
 * A class to manage your contacts and meetings
@@ -58,10 +59,9 @@ public class ContactManagerImpl implements ContactManager {
 			String[] fields;
 
 			while ((line = in.readLine()) != null) {
-				System.out.println(line);
-
 				// use | as delimeter to allow commas in notes
 				fields = line.split("\\|");
+
 				switch (fields[0]) {
 					case "contactId":
 						this.contactId = Integer.parseInt(fields[1]);
@@ -77,23 +77,48 @@ public class ContactManagerImpl implements ContactManager {
 						this.contacts.add(contact);
 						break;
 					case "meeting":
-						int[] attendeeIds = fields[4].split(",");
-						Set<Contact> attendees = new HashSet<>();
-						attendees = getContacts(attendeeIds);
+						Set<Contact> attendees = new HashSet<Contact>();
+						String[] strIds = fields[4].split(",");
+
+						/*
+						 * Create contactId->contact map for known contacts
+						 * Very inefficient but works for now
+						 */
+						HashMap<Integer, Contact> contactIdMap = new HashMap<>();
+						for (Contact knownContact : this.contacts) {
+							contactIdMap.put(knownContact.getId(), knownContact);
+						}
+
+						/*
+						 * Iterate to strIds.length - 1 to avoid
+						 * the empty string created by the trailing comma
+						 * during flush()ing
+						 */
+						for (int i = 0; i < strIds.length - 1; i++) {
+							if (!contactIdMap.containsKey(Integer.parseInt(strIds[i]))) {
+								throw new IllegalArgumentException("Error parsing id " + strIds[i]);
+							} else {
+								attendees.add(contactIdMap.get(Integer.parseInt(strIds[i])));
+							}
+						}
 
 						// create a Calendar object to store parsed data
-						Calendar date = new Calendar.getInstance();
-
+						Calendar date = Calendar.getInstance();
+						date.setTime(dateFormat.parse(fields[2]));
+						
 						Meeting meeting = new MeetingImpl(
 								Integer.parseInt(fields[1]),
 								attendees,
-								date.setTime(dateFormat.parse(fields[2]));
-								fields[3]
+								date);
+						//PastMeeting pastMeeting = (PastMeeting) meeting;
+						//pastMeeting.addNotes(fields[3]);
 						break;
 				}
 	
 			}
 		} catch (IOException ex) {
+				ex.printStackTrace();
+		} catch (ParseException ex) {
 				ex.printStackTrace();
 		} finally {
 			closeReader(in);
@@ -124,26 +149,21 @@ public class ContactManagerImpl implements ContactManager {
 	public void launch() {
 		System.out.println("Welcome to Contact Manager");
 
-		this.addNewContact("First", "Notes 1");
-		this.addNewContact("Second", "Notes 2");
-		this.addNewContact("Third", "Notes 3");
+		this.addNewContact("Contact 1", "Notes 1");
+		this.addNewContact("Contact 2", "Notes 2");
+		this.addNewContact("Contact 3", "Notes 3");
 		
-		Contact contactOne = new ContactImpl(98, "Alex", "Test 98");
-		Contact contactTwo = new ContactImpl(99, "Bean", "Test 99");
+		try {
+			Calendar date1 = Calendar.getInstance();
+			date1.setTime(dateFormat.parse("2000-01-01 12:00:00"));
+			this.addNewPastMeeting(this.contacts, date1, "Past notes 1");
 
-		Set<Contact> attendees = new HashSet<>();
-		attendees.add(contactOne);
-		attendees.add(contactTwo);
-
-		//Meeting meeting = new MeetingImpl(this.meetingId, attendees, Calendar.getInstance());
-		
-		Calendar date1 = new Calendar.getInstance();
-		date1.setTime(dateFormat.parse("2000-01-01 12:00:00"));
-		this.addNewPastMeeting(attendees, date1, "Past notes 1");
-		
-		Calendar date2 = new Calendar.getInstance();
-		date2.setTime(dateFormat.parse("2001-01-01 12:00:00"));
-		this.addNewPastMeeting(attendees, date2, "Past notes 1");
+			Calendar date2 = Calendar.getInstance();
+			date2.setTime(dateFormat.parse("2001-01-01 12:00:00"));
+			this.addNewPastMeeting(this.contacts, date2, "Past notes 1");
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+		}
 
 		this.flush();
 
@@ -178,10 +198,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if there is a meeting with that ID happening in the future
 	*/
 	public PastMeeting getPastMeeting(int id) {
-		for (Meeting meeting : meetings) {
-			// TODO make sure meeting is actually in the past
+		for (Meeting meeting : this.meetings) {
 			if (meeting.getId() == id) {
-				return (PastMeeting) meeting;
+				if (meeting.getDate().after(Calendar.getInstance())) {
+					throw new IllegalArgumentException("Meeting " + id + " is not a past meeting.");
+				} else {
+					return (PastMeeting) meeting;
+				}
 			}
 		}
 		return null;
@@ -195,10 +218,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if there is a meeting with that ID happening in the past
 	*/
 	public FutureMeeting getFutureMeeting(int id) {
-		for (Meeting meeting : meetings) {
-			// TODO make sure is actually a FutureMeeting
+		for (Meeting meeting : this.meetings) {
 			if (meeting.getId() == id) {
-				return (FutureMeeting) meeting;
+				if (meeting.getDate().before(Calendar.getInstance())) {
+					throw new IllegalArgumentException("Meeting " + id + " happened in the past");
+				} else {
+					return (FutureMeeting) meeting;
+				}
 			}
 		}
 		return null;
@@ -211,10 +237,9 @@ public class ContactManagerImpl implements ContactManager {
 	* @return the meeting with the requested ID, or null if there is none
 	*/
 	public Meeting getMeeting(int id) {
-		for (Meeting meeting : meetings) {
-			// TODO make sure is actually a FutureMeeting
+		for (Meeting meeting : this.meetings) {
 			if (meeting.getId() == id) {
-				return (FutureMeeting) meeting;
+				return meeting;
 			}
 		}
 		return null;
@@ -232,13 +257,19 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if the contact does not exist
 	*/
 	public List<Meeting> getFutureMeetingList(Contact contact) {
-		List<Meeting> meetingList = new ArrayList<Meeting>();
-		for (Meeting meeting : meetings) {
-			if (meeting.getContacts().contains(contact)) {
-				meetingList.add(meeting);
+		List<Meeting> result = new ArrayList<>();
+		
+		if (!this.contacts.contains(contact)) {
+			throw new IllegalArgumentException("Contact does not exist.");
+		} else {
+			for (Meeting meeting : this.meetings) {
+				if (meeting.getContacts().contains(contact) &&
+					meeting.getDate().after(Calendar.getInstance())) {
+						result.add(meeting);
+				}
 			}
 		}
-		return meetingList;
+		return result;
 	}
 	
 	/**
@@ -253,13 +284,13 @@ public class ContactManagerImpl implements ContactManager {
 	* @return the list of meetings
 	*/
 	public List<Meeting> getFutureMeetingList(Calendar date) {
-		List<Meeting> meetingList = new ArrayList<Meeting>();
-		for (Meeting meeting : meetings) {
+		List<Meeting> result = new ArrayList<>();
+		for (Meeting meeting : this.meetings) {
 			if (meeting.getDate().equals(date)) {
-				meetingList.add(meeting);
+				result.add(meeting);
 			}
 		}
-		return meetingList;
+		return result;
 	}
 
 	/**
@@ -274,13 +305,18 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if the contact does not exist
 	*/
 	public List<PastMeeting> getPastMeetingList(Contact contact) {
-		List<PastMeeting> meetingList = new ArrayList<PastMeeting>();
-		for (Meeting meeting : meetings) {
-			if (meeting.getContacts().contains(contact)) {
-				meetingList.add((PastMeeting) meeting);
-			}
+		List<PastMeeting> result = new ArrayList<>();
+
+		if (!this.contacts.contains(contact)) {
+			throw new IllegalArgumentException("Contact does not exist.");
+		} else {
+			for (Meeting meeting : this.meetings) {
+				if (meeting.getContacts().contains(contact) &&
+					meeting.getDate().before(Calendar.getInstance())) {
+						result.add((PastMeeting) meeting);
+				}
 		}
-		return meetingList;
+		return result;
 	}
 	
 	/**
@@ -347,7 +383,7 @@ public class ContactManagerImpl implements ContactManager {
 	*/
 	public Set<Contact> getContacts(int... ids) {
 
-		Set<Contact> result = new HashSet<Contact>();
+		Set<Contact> result = new HashSet<>();
 
 		// create a map contactId->contact for all known contacts
 		HashMap<Integer, Contact> contactIdMap = new HashMap<>();
@@ -374,9 +410,18 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws NullPointerException if the parameter is null
 	*/
 	public Set<Contact> getContacts(String name) {
-		// TODO replace this
-		Set<Contact> contacts = new HashSet<Contact>();
-		return contacts;
+		Set<Contact> result = new HashSet<>();
+
+		if (name == null) {
+			throw new NullPointerException();
+		} else {
+			for (Contact contact : this.contacts) {
+				if (contact.getName().toLowerCase().contains(name.toLowerCase())) {
+					result.add(contact);
+				}
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -431,6 +476,7 @@ public class ContactManagerImpl implements ContactManager {
 					// trailing comma dealt with at data load
 					output = output + contact.getId() + ",";
 				}
+				output += "\n";
 				out.write(output);
 			}
 
