@@ -24,6 +24,9 @@ public class ContactManagerImpl implements ContactManager {
 	private int contactId;
 	private int meetingId;
 
+	// format for storing and readings dates and times
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	public ContactManagerImpl() {
 		System.out.println("Creating new Contact Manager...");
 		this.contacts = new HashSet<Contact>();
@@ -43,7 +46,7 @@ public class ContactManagerImpl implements ContactManager {
 	}
 
 	/**
-	 * Recover contactId, meeting Id and rebuild contact and meeting lists
+	 * Recover contactId, meetingId and rebuild contact and meeting lists
 	 *
 	 * @param file File object to search for data
 	 */
@@ -57,9 +60,8 @@ public class ContactManagerImpl implements ContactManager {
 			while ((line = in.readLine()) != null) {
 				System.out.println(line);
 
-				// using | delimeter to allow commas in notes
+				// use | as delimeter to allow commas in notes
 				fields = line.split("\\|");
-				System.out.println(fields[0]);
 				switch (fields[0]) {
 					case "contactId":
 						this.contactId = Integer.parseInt(fields[1]);
@@ -75,15 +77,17 @@ public class ContactManagerImpl implements ContactManager {
 						this.contacts.add(contact);
 						break;
 					case "meeting":
-						/*
 						int[] attendeeIds = fields[4].split(",");
 						Set<Contact> attendees = new HashSet<>();
 
+						// create a Calendar object to store parsed data
+						Calendar date = new Calendar.getInstance();
+
 						Meeting meeting = new MeetingImpl(
 								Integer.parseInt(fields[1]),
-								fields[2],
+								attendees,
+								date.setTime(dateFormat.parse(fields[2]));
 								fields[3]
-						*/
 						break;
 				}
 	
@@ -362,7 +366,6 @@ public class ContactManagerImpl implements ContactManager {
 		File file = new File(FILENAME);
 		PrintWriter out = null;
 		String output;
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		try {
 			out = new PrintWriter(file);
