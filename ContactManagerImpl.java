@@ -135,8 +135,15 @@ public class ContactManagerImpl implements ContactManager {
 		attendees.add(contactTwo);
 
 		//Meeting meeting = new MeetingImpl(this.meetingId, attendees, Calendar.getInstance());
-		this.addNewPastMeeting(attendees, Calendar.getInstance(), "Past notes");
 		
+		Calendar date1 = new Calendar.getInstance();
+		date1.setTime(dateFormat.parse("2000-01-01 12:00:00"));
+		this.addNewPastMeeting(attendees, date1, "Past notes 1");
+		
+		Calendar date2 = new Calendar.getInstance();
+		date2.setTime(dateFormat.parse("2001-01-01 12:00:00"));
+		this.addNewPastMeeting(attendees, date2, "Past notes 1");
+
 		this.flush();
 
 	}
