@@ -369,10 +369,12 @@ public class ContactManagerImpl implements ContactManager {
 				out.write(output);
 			}
 			for (Meeting meeting : this.meetings) {
+				PastMeeting pastMeeting = (PastMeeting) meeting;
 				output = "meeting" + "|" +
-					meeting.getId() + "|" +
-					meeting.getDate().toString() + "|";
-				for (Contact contact : meeting.getContacts()) {
+					pastMeeting.getId() + "|" +
+					pastMeeting.getDate().toString() + "|" +
+					pastMeeting.getNotes() + "|";
+				for (Contact contact : pastMeeting.getContacts()) {
 					// trailing comma dealt with at data load
 					output = output + contact.getId() + ",";
 				}
