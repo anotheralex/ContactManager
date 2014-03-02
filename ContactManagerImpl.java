@@ -79,6 +79,7 @@ public class ContactManagerImpl implements ContactManager {
 					case "meeting":
 						int[] attendeeIds = fields[4].split(",");
 						Set<Contact> attendees = new HashSet<>();
+						attendees = getContacts(attendeeIds);
 
 						// create a Calendar object to store parsed data
 						Calendar date = new Calendar.getInstance();
@@ -345,9 +346,24 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws IllegalArgumentException if any of the IDs does not correspond to a real contact
 	*/
 	public Set<Contact> getContacts(int... ids) {
-		// TODO replace this
-		Set<Contact> contacts = new HashSet<Contact>();
-		return contacts;
+
+		Set<Contact> result = new HashSet<Contact>();
+
+		// create a map contactId->contact for all known contacts
+		HashMap<Integer, Contact> contactIdMap = new HashMap<>();
+		for (Contact contact : this.contacts) {
+			contactIdMap.put(contact.getId(), contact);
+		}
+
+		for (int i = 0; i < ids.length; i++) {
+			if (!contactIdMap.containsKey(ids[i])) {
+				throw new IllegalArgumentException();
+			} else {
+				result.add(contactIdMap.get(ids[i]));
+			}
+		}
+
+		return result;
 	}
 	
 	/**
