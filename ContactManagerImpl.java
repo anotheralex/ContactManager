@@ -15,8 +15,8 @@ public class ContactManagerImpl implements ContactManager {
 
 	/*
 	 * Persistent IDs for contacts and meetings
-	 * these variables serve as for ID for the next created value
-	 * they are restored to their previous values when loading previous data
+	 * These variables serve as the IDs for the next created instance
+	 * They are restored to their previous values when loading previous data
 	 */
 	private int contactId;
 	private int meetingId;
@@ -118,7 +118,7 @@ public class ContactManagerImpl implements ContactManager {
 		attendees.add(contactOne);
 		attendees.add(contactTwo);
 
-		PastMeeting meeting = new PastMeetingImpl(1, attendees, Calendar.getInstance(), "Some notes");
+		Meeting meeting = new MeetingImpl(1, attendees, Calendar.getInstance());
 		this.meetings.add(meeting);
 		
 		this.flush();
@@ -139,8 +139,8 @@ public class ContactManagerImpl implements ContactManager {
 			throw new IllegalArgumentException("Error. " + date + " is in the past.");
 		} else {
 			//TODO check this
-			Meeting meeting = new MeetingImpl(this.meetingId, contacts, date);
-			this.meetings.add(meeting);
+			FutureMeeting meeting = new MeetingImpl(this.meetingId, contacts, date);
+			this.meetings.add((Meeting) meeting);
 			return meeting.getId();
 		}
 	}
@@ -371,8 +371,7 @@ public class ContactManagerImpl implements ContactManager {
 			for (Meeting meeting : this.meetings) {
 				output = "meeting" + "|" +
 					meeting.getId() + "|" +
-					meeting.getDate().toString() + "|" +
-					meeting.getNotes() + "|";
+					meeting.getDate().toString() + "|";
 				for (Contact contact : meeting.getContacts()) {
 					// trailing comma dealt with at data load
 					output = output + contact.getId() + ",";
