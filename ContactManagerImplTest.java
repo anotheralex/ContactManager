@@ -26,12 +26,13 @@ public class ContactManagerImplTest {
 		}
 		*/
 
-		ContactManager cm = new ContactManagerImpl();
+		//ContactManager cm = new ContactManagerImpl();
 
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void addNewContactTestNullName() {
+		ContactManager cm = new ContactManagerImpl();
 		String name = null;
 		String notes = "Notes";
 		cm.addNewContact(name, notes);
@@ -39,20 +40,26 @@ public class ContactManagerImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void addNewContactTestNullNotes() {
+		ContactManager cm = new ContactManagerImpl();
 		String name = "Name";
 		String notes = null;
 		cm.addNewContact(name, notes);
 	}
 
 	@Test
+	public void addNewContactTestNormal() {
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+	}
+
+	@Test
 	public void getContactsById() {
-		cm.addNewContact("Name 1", "Notes");
-		cm.addNewContact("Name 2", "Notes");
-		cm.addNewContact("Name 3", "Notes");
-		cm.addNewContact("Name 4", "Notes");
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
 		
 		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts(1, 2);
+		contacts = cm.getContacts(0, 1);
 
 		int expected = 2;
 		int actual = contacts.size();

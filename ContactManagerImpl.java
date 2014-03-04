@@ -15,7 +15,7 @@ public class ContactManagerImpl implements ContactManager {
 
 	private Set<Contact> contacts;
 	private Set<Meeting> meetings;
-	private static final String FILENAME = "contacts.txt";
+	private String filename = "contacts.txt";
 
 	/*
 	 * Persistent IDs for contacts and meetings
@@ -29,7 +29,6 @@ public class ContactManagerImpl implements ContactManager {
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	public ContactManagerImpl() {
-		System.out.println("Creating new Contact Manager...");
 		this.contacts = new HashSet<Contact>();
 		this.meetings = new HashSet<Meeting>();
 	
@@ -37,7 +36,7 @@ public class ContactManagerImpl implements ContactManager {
 		 * If it does load data
 		 * If it does not set base contactId and meetingId
 		 */
-		File file = new File(FILENAME);
+		File file = new File(filename);
 		if (file.exists()) {
 			this.load(file);
 		} else {
@@ -371,10 +370,11 @@ public class ContactManagerImpl implements ContactManager {
 	public void addNewContact(String name, String notes) {
 		if (name == null || notes == null) {
 			throw new NullPointerException();
+		} else {
+			Contact newContact = new ContactImpl(contactId, name, notes);
+			this.contacts.add(newContact);
+			this.contactId++;
 		}
-		Contact newContact = new ContactImpl(contactId, name, notes);
-		this.contacts.add(newContact);
-		this.contactId++;
 	}
 	
 	/**
@@ -389,7 +389,7 @@ public class ContactManagerImpl implements ContactManager {
 		Set<Contact> result = new HashSet<>();
 
 		// create a map contactId->contact for all known contacts
-		HashMap<Integer, Contact> contactIdMap = new HashMap<>();
+		Map<Integer, Contact> contactIdMap = new HashMap<>();
 		for (Contact contact : this.contacts) {
 			contactIdMap.put(contact.getId(), contact);
 		}
@@ -434,7 +434,7 @@ public class ContactManagerImpl implements ContactManager {
 	* closed and when/if the user requests it
 	*/
 	public void flush() {
-		File file = new File(FILENAME);
+		File file = new File(filename);
 		PrintWriter out = null;
 		String output;
 
