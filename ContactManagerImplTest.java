@@ -103,5 +103,36 @@ public class ContactManagerImplTest {
 		assertEquals(expected, actual);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void addFutureMeetingTestFutureDate() {
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		Set<Contact> contacts = new HashSet<>();
+		contacts = cm.getContacts(0, 1);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		cm.addFutureMeeting(contacts, past);
+	}
+
+	@Test
+	public void addFutureMeetingTestNormal() {
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		Set<Contact> contacts = new HashSet<>();
+		contacts = cm.getContacts(0, 1);
+
+		Calendar future = Calendar.getInstance();
+		past.set(2015, 1, 1);
+
+		cm.addFutureMeeting(contacts, future);
+	}
 
 }
