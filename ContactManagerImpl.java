@@ -357,7 +357,21 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws NullPointerException if the notes are null
 	*/
 	public void addMeetingNotes(int id, String text) {
-		//TODO
+		// create meetingId->meeting map to check for existence
+		Map<Integer, Meeting> meetingIdMap = new HashMap<>();
+		for (Meeting meeting : this.meetings) {
+			meetingIdMap.put(meeting.getId(), meeting);
+		}
+
+		if (!meetingIdMap.contains(id)) {
+			throw new IllegalArgumentException();
+		} else if (meetingIdMap.get(id).getDate().after(Calendar.getInstance())) {
+			throw new IllegalStateException();
+		} else {
+			//TODO meeting exists so add notes
+			//meetingIdMap.get(id).addNotes(text);
+		}
+
 	}
 	
 	/**
