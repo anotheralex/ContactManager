@@ -364,7 +364,7 @@ public class ContactManagerImpl implements ContactManager {
 			meetingIdMap.put(meeting.getId(), meeting);
 		}
 
-		if (!meetingIdMap.contains(id)) {
+		if (!meetingIdMap.containsKey(id)) {
 			throw new IllegalArgumentException();
 		} else if (meetingIdMap.get(id).getDate().after(Calendar.getInstance())) {
 			throw new IllegalStateException();
