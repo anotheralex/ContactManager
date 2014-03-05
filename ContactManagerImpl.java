@@ -109,6 +109,7 @@ public class ContactManagerImpl implements ContactManager {
 								Integer.parseInt(fields[1]),
 								attendees,
 								date);
+						// TODO add notes
 						//PastMeeting pastMeeting = (PastMeeting) meeting;
 						//pastMeeting.addNotes(fields[3]);
 						break;
