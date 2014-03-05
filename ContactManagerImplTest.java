@@ -129,10 +129,17 @@ public class ContactManagerImplTest {
 		Set<Contact> contacts = new HashSet<>();
 		contacts = cm.getContacts(0, 1);
 
-		Calendar future = Calendar.getInstance();
-		past.set(2015, 1, 1);
+		Calendar future1 = Calendar.getInstance();
+		future1.set(2015, 1, 1);
 
-		cm.addFutureMeeting(contacts, future);
+		Calendar future2 = Calendar.getInstance();
+		future2.set(2016, 1, 1);
+		
+		int i = cm.addFutureMeeting(contacts, future1);
+		int j = cm.addFutureMeeting(contacts, future2);
+
+		assertEquals(0, i);
+		assertEquals(1, j);
 	}
 
 }
