@@ -342,8 +342,9 @@ public class ContactManagerImpl implements ContactManager {
 	public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) {
 		if (contacts == null || date == null || text == null) {
 			throw new NullPointerException();
+		} else if (contacts.isEmpty()) {
+			throw new IllegalArgumentException("No attendees given");
 		} else {
-
 			for (Contact contact : contacts) {
 				if (!this.contacts.contains(contact)) {
 					throw new IllegalArgumentException();
