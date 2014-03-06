@@ -252,5 +252,15 @@ public class ContactManagerImplTest {
 		cm.addNewPastMeeting(attendees, past, notes);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void addMeetingNotesTestNoMeetingWithId() {
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+	
+		// try to add notes to non-existant meeting
+		cm.addMeetingNotes(1, "text");
+	}
 
 }
