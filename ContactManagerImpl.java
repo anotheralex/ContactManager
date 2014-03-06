@@ -395,7 +395,7 @@ public class ContactManagerImpl implements ContactManager {
 					meetingIdMap.get(id).getDate(),
 					text);
 			this.meetings.add(updated);
-			this.meeting.remove(meetindIdMap.get(id));
+			this.meetings.remove(meetingIdMap.get(id));
 		}
 
 	}
