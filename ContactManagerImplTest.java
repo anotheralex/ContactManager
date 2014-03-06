@@ -201,6 +201,8 @@ public class ContactManagerImplTest {
 	@Test(expected = NullPointerException.class)
 	public void addNewPastMeetingNullContacts() {
 		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
 		
 		Set<Contact> contacts = null;
 
@@ -213,7 +215,6 @@ public class ContactManagerImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addNewPastMeetingNoAttendees() {
-
 		// instantiate a ContactManager object, add Contacts
 		ContactManager cm = new ContactManagerImpl();
 		cm.addNewContact("name", "notes");
@@ -227,7 +228,28 @@ public class ContactManagerImplTest {
 
 		String notes = "notes";
 		cm.addNewPastMeeting(attendees, past, notes);
+	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void addNewPastMeetingUnknownAttendee() {
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		// create empty set of attendees
+		Set<Contact> attendees = new HashSet<>();
+		attendees = cm.getContacts(0);
+
+		Contact unknown = new ContactImpl(99, "Unknown", "notes");
+		attendees.add(unknown);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		String notes = "notes";
+
+		cm.addNewPastMeeting(attendees, past, notes);
 	}
 
 
