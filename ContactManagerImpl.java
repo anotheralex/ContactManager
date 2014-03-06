@@ -343,6 +343,13 @@ public class ContactManagerImpl implements ContactManager {
 		if (contacts == null || date == null || text == null) {
 			throw new NullPointerException();
 		} else {
+
+			for (Contact contact : contacts) {
+				if (!this.contacts.contains(contact)) {
+					throw new IllegalArgumentException();
+				}
+			}
+
 			PastMeeting meeting = new MeetingImpl(this.meetingId, contacts, date, text);
 			this.meetings.add((Meeting) meeting);
 			this.meetingId++;
