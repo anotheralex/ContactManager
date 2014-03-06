@@ -211,5 +211,24 @@ public class ContactManagerImplTest {
 		cm.addNewPastMeeting(contacts, past, notes);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void addNewPastMeetingNoAttendees() {
+
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		// create empty set of attendees
+		Set<Contact> attendees = new HashSet<>();
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		String notes = "notes";
+		cm.addNewPastMeeting(attendees, past, notes);
+
+	}
+
 
 }
