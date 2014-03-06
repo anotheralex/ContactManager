@@ -382,6 +382,8 @@ public class ContactManagerImpl implements ContactManager {
 			throw new IllegalArgumentException();
 		} else if (meetingIdMap.get(id).getDate().after(Calendar.getInstance())) {
 			throw new IllegalStateException();
+		} else if (text == null) {
+			throw new NullPointerException();
 		} else {
 			/*
 			 * Ideally want meetingIdMap.get(id).addNotes(text);

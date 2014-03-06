@@ -280,4 +280,21 @@ public class ContactManagerImplTest {
 		cm.addMeetingNotes(0, "text");
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void addMeetingNotesNullNotes() {
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		Set<Contact> contacts = new HashSet<>();
+		contacts = cm.getContacts(0, 1);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		cm.addNewPastMeeting(contacts, past, "");
+		cm.addMeetingNotes(0, null);
+	}
+
 }
