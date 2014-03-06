@@ -61,6 +61,11 @@ public class ContactManagerImpl implements ContactManager {
 				// use | as delimeter to allow commas in notes
 				fields = line.split("\\|");
 
+				/*
+				 * This method of importing is hopelessly complicated
+				 * Better to use a better data structure or import/export
+				 * method. This is working for now and will not be changed
+				 */
 				switch (fields[0]) {
 					case "contactId":
 						this.contactId = Integer.parseInt(fields[1]);
@@ -77,9 +82,11 @@ public class ContactManagerImpl implements ContactManager {
 						break;
 					case "meeting":
 						Set<Contact> attendees = new HashSet<Contact>();
+						// create array of IDs of attendees at meeting
 						String[] strIds = fields[4].split(",");
 
 						/*
+						 * Set of known contacts already created above
 						 * Create contactId->contact map for known contacts
 						 * Very inefficient but works for now
 						 */
@@ -89,6 +96,7 @@ public class ContactManagerImpl implements ContactManager {
 						}
 
 						/*
+						 * Populate Set<Contact>() with meeting attendees
 						 * Iterate to strIds.length - 1 to avoid
 						 * the empty string created by the trailing comma
 						 * during flush()ing
@@ -101,7 +109,7 @@ public class ContactManagerImpl implements ContactManager {
 							}
 						}
 
-						// create a Calendar object to store parsed data
+						// create a Calendar object to store parsed date
 						Calendar date = Calendar.getInstance();
 						date.setTime(dateFormat.parse(fields[2]));
 						
