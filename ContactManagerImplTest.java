@@ -142,4 +142,74 @@ public class ContactManagerImplTest {
 		assertEquals(1, j);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void getPastMeetingTestMeetingIsInFuture() {
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		Set<Contact> contacts = new HashSet<>();
+		contacts = cm.getContacts(0, 1);
+
+		Calendar future = Calendar.getInstance();
+		future.set(2015, 1, 1);
+
+		// add a future meeting and get its ID
+		int i = cm.addFutureMeeting(contacts, future);
+
+		PastMeeting pm = cm.getPastMeeting(i);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void addNewPastMeetingNullNotes() {
+
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		Set<Contact> contacts = new HashSet<>();
+		contacts = cm.getContacts(0, 1);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		String notes = null;
+		cm.addNewPastMeeting(contacts, past, notes);
+
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void addNewPastMeetingNullDate() {
+
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		Set<Contact> contacts = new HashSet<>();
+		contacts = cm.getContacts(0, 1);
+
+		Calendar past = null;
+
+		String notes = "notes";
+		cm.addNewPastMeeting(contacts, past, notes);
+
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void addNewPastMeetingNullContacts() {
+		ContactManager cm = new ContactManagerImpl();
+		
+		Set<Contact> contacts = null;
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		String notes = "notes";
+		cm.addNewPastMeeting(contacts, past, notes);
+	}
+
+
 }
