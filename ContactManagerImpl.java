@@ -383,8 +383,19 @@ public class ContactManagerImpl implements ContactManager {
 		} else if (meetingIdMap.get(id).getDate().after(Calendar.getInstance())) {
 			throw new IllegalStateException();
 		} else {
-			//TODO meeting exists so add notes
-			//meetingIdMap.get(id).addNotes(text);
+			/*
+			 * Ideally want meetingIdMap.get(id).addNotes(text);
+			 * No setter method for notes in interface so
+			 * create a new meeting and copy old information
+			 * but add the new notes, then add the new meeting and
+			 * destroy the old meeting
+			 */
+			Meeting updated  = new MeetingImpl(id,
+					meetingIdMap.get(id).getContacts(),
+					meetingIdMap.get(id).getDate(),
+					text);
+			this.meetings.add(updated);
+			this.meeting.remove(meetindIdMap.get(id));
 		}
 
 	}
