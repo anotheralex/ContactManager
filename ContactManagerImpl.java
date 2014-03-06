@@ -190,7 +190,6 @@ public class ContactManagerImpl implements ContactManager {
 		if (date.before(Calendar.getInstance())) {
 			throw new IllegalArgumentException("Error. Date is in the past.");
 		} else {
-			//TODO check this
 			FutureMeeting meeting = new MeetingImpl(this.meetingId, contacts, date);
 			this.meetings.add((Meeting) meeting);
 			this.meetingId++;
@@ -344,8 +343,7 @@ public class ContactManagerImpl implements ContactManager {
 		if (contacts == null || date == null || text == null) {
 			throw new NullPointerException();
 		} else {
-			//TODO check this
-			PastMeeting meeting = new MeetingImpl(this.meetingId, contacts, date);
+			PastMeeting meeting = new MeetingImpl(this.meetingId, contacts, date, text);
 			this.meetings.add((Meeting) meeting);
 			this.meetingId++;
 		}
