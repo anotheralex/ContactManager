@@ -263,4 +263,21 @@ public class ContactManagerImplTest {
 		cm.addMeetingNotes(1, "text");
 	}
 
+	@Test(expected = IllegalStateException.class)
+	public void addMeetingNotesMeetingInFuture() {
+		// instantiate a ContactManager object, add Contacts
+		ContactManager cm = new ContactManagerImpl();
+		cm.addNewContact("name", "notes");
+		cm.addNewContact("name", "notes");
+		
+		Set<Contact> contacts = new HashSet<>();
+		contacts = cm.getContacts(0, 1);
+
+		Calendar future = Calendar.getInstance();
+		future.set(2015, 1, 1);
+
+		cm.addFutureMeeting(contacts, future);
+		cm.addMeetingNotes(0, "text");
+	}
+
 }
