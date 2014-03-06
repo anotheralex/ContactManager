@@ -14,12 +14,38 @@ public class MeetingImpl implements Meeting, PastMeeting, FutureMeeting {
 	private Set<Contact> contacts;
 	private String notes;
 
+	/**
+	 * Constructor for meeting without notes
+	 *
+	 * @param id the meeting ID
+	 * @param contacts a Set of contacts
+	 * @date the date of the meeting
+	 *
+	 */
 	public MeetingImpl(int id, Set<Contact> contacts, Calendar date) {
 		this.id = id;
 		this.contacts = contacts;
 		this.date = date;
 		this.notes = "";
 	}
+
+	/**
+	 * Constructor for a meeting with notes
+	 *
+	 * @param id the meeting ID
+	 * @param contacts a Set of contacts
+	 * @param date the date of the meeting
+	 * @param notes notes for the meeting
+	 *
+	 */
+	public MeetingImpl(int id, Set<Contact> contacts, Calendar date, String notes) {
+		this.id = id;
+		this.contacts = contacts;
+		this.date = date;
+		this.notes = notes;
+	}
+
+
 
 	/**
 	* Returns the id of the meeting
