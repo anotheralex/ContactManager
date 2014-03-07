@@ -17,8 +17,11 @@ public class ContactManagerImplTest {
 
 	@Before
 	public void setup() {
+		// instantiate a ContactManager object, add two Contacts
 		manager = new ContactManagerImpl();
-
+		manager.addNewContact("name", "notes");
+		manager.addNewContact("name", "notes");
+	
 		Calendar pastDate = Calendar.getInstance();
 		pastDate.set(2013, 1, 1);
 
@@ -279,19 +282,11 @@ public class ContactManagerImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void addMeetingNotesNullNotes() {
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
 		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts(0, 1);
+		contacts = manager.getContacts(0, 1);
 
-		Calendar past = Calendar.getInstance();
-		past.set(2013, 1, 1);
-
-		cm.addNewPastMeeting(contacts, past, "");
-		cm.addMeetingNotes(0, null);
+		manager.addNewPastMeeting(contacts, pastDate, "");
+		manager.addMeetingNotes(0, null);
 	}
 
 	@Test
