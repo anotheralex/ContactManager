@@ -10,23 +10,20 @@ import java.io.*;
 
 public class ContactManagerImplTest {
 
-	private ContactManager cm;
+	private ContactManager manager;
 	private static final String FILENAME = "contacts.txt";
+	private Calendar pastDate;
+	private Calendar futureDate;
 
 	@Before
 	public void setup() {
-		/*
-		File file = new File(FILENAME);
-		try {
-			if (file.exists()) {
-				file.delete();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
+		manager = new ContactManagerImpl();
 
-		//ContactManager cm = new ContactManagerImpl();
+		Calendar pastDate = Calendar.getInstance();
+		pastDate.set(2013, 1, 1);
+
+		Calendar futureDate = Calendar.getInstance();
+		futureDate.set(2015, 1, 1);
 
 	}
 
@@ -297,5 +294,9 @@ public class ContactManagerImplTest {
 		cm.addMeetingNotes(0, null);
 	}
 
+	@Test
+	public void addMeetingNotesTest() {
+		
+	}
 
 }
