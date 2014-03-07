@@ -372,6 +372,12 @@ public class ContactManagerImpl implements ContactManager {
 	* @throws NullPointerException if the notes are null
 	*/
 	public void addMeetingNotes(int id, String text) {
+		/*
+		 * this waste memory and won't scale well
+		 * should instead override equals() and
+		 * create a new private method for confirming inclusion
+		 * based on id
+		 */
 		// create meetingId->meeting map to check for existence
 		Map<Integer, Meeting> meetingIdMap = new HashMap<>();
 		for (Meeting meeting : this.meetings) {
@@ -399,7 +405,6 @@ public class ContactManagerImpl implements ContactManager {
 			this.meetings.add(updated);
 			this.meetings.remove(meetingIdMap.get(id));
 		}
-
 	}
 	
 	/**
