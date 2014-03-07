@@ -351,8 +351,8 @@ public class ContactManagerImpl implements ContactManager {
 				}
 			}
 
-			PastMeeting meeting = new MeetingImpl(this.meetingId, contacts, date, text);
-			this.meetings.add((Meeting) meeting);
+			Meeting meeting = new MeetingImpl(this.meetingId, contacts, date, text);
+			this.meetings.add(meeting);
 			this.meetingId++;
 		}
 	}

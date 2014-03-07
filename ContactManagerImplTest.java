@@ -282,16 +282,30 @@ public class ContactManagerImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void addMeetingNotesNullNotes() {
-		Set<Contact> contacts = new HashSet<>();
-		contacts = manager.getContacts(0, 1);
+		Set<Contact> contacts = manager.getContacts(0, 1);
 
-		manager.addNewPastMeeting(contacts, pastDate, "");
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		manager.addNewPastMeeting(contacts, past, "");
 		manager.addMeetingNotes(0, null);
 	}
 
 	@Test
 	public void addMeetingNotesTest() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
 		
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		manager.addNewPastMeeting(contacts, past, "");
+
+		String actual = "notes added later";
+		manager.addMeetingNotes(0, actual);
+		
+		PastMeeting pm = manager.getPastMeeting(0);
+		String expected = pm.getNotes();
+		assertEquals(expected, actual);
 	}
 
 }
