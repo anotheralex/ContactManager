@@ -297,4 +297,5 @@ public class ContactManagerImplTest {
 		cm.addMeetingNotes(0, null);
 	}
 
+
 }
