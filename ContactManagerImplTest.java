@@ -408,6 +408,9 @@ public class ContactManagerImplTest {
 		assertTrue(lm.isEmpty());
 	}
 
+	/*
+	 * TODO test for chronological ordering
+	 */
 	@Test
 	public void getFutureMeetingListKnownContactCorrectNumMeetings() {
 		Set<Contact> contacts = manager.getContacts(0, 1);
@@ -450,6 +453,9 @@ public class ContactManagerImplTest {
 		assertTrue(pm.isEmpty());
 	}
 
+	/*
+	 * TODO test for chronological ordering
+	 */
 	@Test
 	public void getPastMeetingListKnownContactCorrectNumMeetings() {
 		Set<Contact> contacts = manager.getContacts(0, 1);
@@ -475,4 +481,63 @@ public class ContactManagerImplTest {
 		int actual = pm.size();
 		assertEquals(expected, actual);
 	}
+
+	@Test
+	public void getFutureMeetingListTestMeetingsInFuture() {
+		Calendar future = Calendar.getInstance();
+		future.set(2015, 1, 1);
+
+		manager.addFutureMeeting(manager.getContacts(0), future);
+		manager.addFutureMeeting(manager.getContacts(1), future);
+		manager.addFutureMeeting(manager.getContacts(0, 1), future);
+
+		List<Meeting> lm = manager.getFutureMeetingList(future);
+		int expected = 3;
+		int actual = lm.size();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void getFutureMeetingListTestMeetingsInPast() {
+		Calendar future = Calendar.getInstance();
+		future.set(2015, 1, 1);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+		String notes = "notes";
+
+		manager.addFutureMeeting(manager.getContacts(0), future);
+		manager.addNewPastMeeting(manager.getContacts(0), past, notes);
+		manager.addNewPastMeeting(manager.getContacts(1), past, notes);
+		manager.addNewPastMeeting(manager.getContacts(0, 1), past, notes);
+
+		List<Meeting> lm = manager.getFutureMeetingList(past);
+		int expected = 3;
+		int actual = lm.size();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void getFutureMeetingListTestNoMeetingsOnDate() {
+		Calendar future = Calendar.getInstance();
+		future.set(2015, 1, 1);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		Calendar date = Calendar.getInstance();
+		date.set(2014, 1, 1);
+
+		String notes = "notes";
+
+		manager.addFutureMeeting(manager.getContacts(0), future);
+		manager.addNewPastMeeting(manager.getContacts(0), past, notes);
+		manager.addNewPastMeeting(manager.getContacts(1), past, notes);
+		manager.addNewPastMeeting(manager.getContacts(0, 1), past, notes);
+
+		List<Meeting> lm = manager.getFutureMeetingList(date);
+		assertTrue(lm.isEmpty());
+	}
+
+
 }
