@@ -144,21 +144,105 @@ public class ContactManagerImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void getPastMeetingTestMeetingIsInFuture() {
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
-		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts(0, 1);
+		Set<Contact> contacts = manager.getContacts(0, 1);
 
 		Calendar future = Calendar.getInstance();
 		future.set(2015, 1, 1);
 
 		// add a future meeting and get its ID
-		int i = cm.addFutureMeeting(contacts, future);
+		int i = manager.addFutureMeeting(contacts, future);
 
-		PastMeeting pm = cm.getPastMeeting(i);
+		PastMeeting pm = manager.getPastMeeting(i);
+	}
+
+	@Test
+	public void getPastMeetingTestCheckClass() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		String notes = "notes";
+
+		// add a past meeting and get its ID
+		manager.addNewPastMeeting(contacts, past, notes);
+
+		Object obj = manager.getPastMeeting(0);
+		assertTrue(obj instanceof PastMeeting);
+	}
+
+	@Test
+	public void getPastMeetingTestCheckReturnContents() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		String expected = "notes";
+
+		// add a past meeting and get its ID
+		manager.addNewPastMeeting(contacts, past, expected);
+
+		String actual = manager.getPastMeeting(0).getNotes();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void getPastMeetingTestUknownReturnsNull() {
+		PastMeeting pm = manager.getPastMeeting(0);
+		assertNull(pm);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void getFutureMeetingTestMeetingIsInPast() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+		String text = "notes";
+
+		// add a past meeting and get its ID
+		manager.addNewPastMeeting(contacts, past, text);
+		FutureMeeting fm = manager.getFutureMeeting(0);
+	}
+
+	@Test
+	public void getFutureMeetingTestCheckClass() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+
+		Calendar future = Calendar.getInstance();
+		future.set(2015, 1, 1);
+
+		// add a past meeting and get its ID
+		manager.addFutureMeeting(contacts, future);
+
+		Object obj = manager.getFutureMeeting(0);
+		assertTrue(obj instanceof FutureMeeting);
+	}
+
+	@Test
+	public void getFutureMeetingTestUknownReturnsNull() {
+		FutureMeeting fm = manager.getFutureMeeting(0);
+		assertNull(fm);
+	}
+
+	@Test
+	public void getMeetingTestCheckClass() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+
+		Calendar future = Calendar.getInstance();
+		future.set(2015, 1, 1);
+
+		manager.addFutureMeeting(contacts, future);
+
+		Object obj = manager.getMeeting(0);
+		assertTrue(obj instanceof Meeting);
+	}
+
+	@Test
+	public void getMeetingTestUknownReturnsNull() {
+		Meeting meeting = manager.getMeeting(0);
+		assertNull(meeting);
 	}
 
 	@Test(expected = NullPointerException.class)
