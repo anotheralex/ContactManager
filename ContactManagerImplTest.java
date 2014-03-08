@@ -392,4 +392,20 @@ public class ContactManagerImplTest {
 		assertEquals(expected, actual);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void getFutureMeetingListTestUnknownContact() {
+		Contact unknown = new ContactImpl(99, "Unknown", "notes");
+		List<Meeting> lm = manager.getFutureMeetingList(unknown);
+	}
+
+	@Test
+	public void getFutureMeetingListNoMeetingsWithContact() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+		Object[] contactsArray = contacts.toArray();
+		Contact known = (Contact)contactsArray[0];
+
+		List<Meeting> lm = manager.getFutureMeetingList(known);
+		assertTrue(lm.isEmpty());
+	}
+
 }
