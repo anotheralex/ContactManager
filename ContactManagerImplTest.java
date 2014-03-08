@@ -408,4 +408,71 @@ public class ContactManagerImplTest {
 		assertTrue(lm.isEmpty());
 	}
 
+	@Test
+	public void getFutureMeetingListKnownContactCorrectNumMeetings() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+		Object[] contactsArray = contacts.toArray();
+		Contact known = (Contact)contactsArray[0];
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		Calendar future1 = Calendar.getInstance();
+		future1.set(2015, 1, 1);
+
+		Calendar future2 = Calendar.getInstance();
+		future2.set(2016, 1, 1);
+
+		manager.addFutureMeeting(contacts, future1);
+		manager.addFutureMeeting(contacts, future2);
+		manager.addNewPastMeeting(contacts, past, "old");
+
+		List<Meeting> lm = manager.getFutureMeetingList(known);
+
+		int expected = 2;
+		int actual = lm.size();
+		assertEquals(expected, actual);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getPastMeetingListTestUnknownContact() {
+		Contact unknown = new ContactImpl(99, "Unknown", "notes");
+		List<PastMeeting> pm = manager.getPastMeetingList(unknown);
+	}
+
+	@Test
+	public void getPastMeetingListNoMeetingsWithContact() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+		Object[] contactsArray = contacts.toArray();
+		Contact known = (Contact)contactsArray[0];
+
+		List<PastMeeting> pm = manager.getPastMeetingList(known);
+		assertTrue(pm.isEmpty());
+	}
+
+	@Test
+	public void getPastMeetingListKnownContactCorrectNumMeetings() {
+		Set<Contact> contacts = manager.getContacts(0, 1);
+		Object[] contactsArray = contacts.toArray();
+		Contact known = (Contact)contactsArray[0];
+
+		Calendar past = Calendar.getInstance();
+		past.set(2013, 1, 1);
+
+		Calendar future1 = Calendar.getInstance();
+		future1.set(2015, 1, 1);
+
+		Calendar future2 = Calendar.getInstance();
+		future2.set(2016, 1, 1);
+
+		manager.addFutureMeeting(contacts, future1);
+		manager.addFutureMeeting(contacts, future2);
+		manager.addNewPastMeeting(contacts, past, "old");
+
+		List<PastMeeting> pm = manager.getPastMeetingList(known);
+
+		int expected = 1;
+		int actual = pm.size();
+		assertEquals(expected, actual);
+	}
 }
