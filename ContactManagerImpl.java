@@ -170,6 +170,10 @@ public class ContactManagerImpl implements ContactManager {
 	}
 
 	public static void main(String[] args) {
+		/*
+		 * When run from main, use the constructor that makes use
+		 * of stored data
+		 */
 		ContactManagerImpl cm = new ContactManagerImpl("contacts.txt");
 		cm.launch();
 	}
