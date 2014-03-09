@@ -27,8 +27,23 @@ public class ContactManagerImpl implements ContactManager {
 
 	// format for storing and readings dates and times
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
+
+	/**
+	 * Constructor
+	 *
+	 * Creates main data structures and resets main IDs
+	 *
+	 * With no parameters any stored data will be ignored.
+	 * Useful for testing purposes.
+	 */
 	public ContactManagerImpl() {
+		this.contacts = new HashSet<Contact>();
+		this.meetings = new HashSet<Meeting>();
+		this.contactId = 0;
+		this.meetingId = 0;
+	}
+
+	public ContactManagerImpl(String str) {
 		this.contacts = new HashSet<Contact>();
 		this.meetings = new HashSet<Meeting>();
 	
@@ -155,10 +170,15 @@ public class ContactManagerImpl implements ContactManager {
 	}
 
 	public static void main(String[] args) {
-		ContactManagerImpl cm = new ContactManagerImpl();
+		ContactManagerImpl cm = new ContactManagerImpl("contacts.txt");
 		cm.launch();
 	}
 
+	/*
+	 * Simple code to test some of the functionality of the class.
+	 * Most important for checkign that data export and import
+	 * are working properly.
+	 */
 	public void launch() {
 		System.out.println("Welcome to Contact Manager");
 
