@@ -113,10 +113,12 @@ public class ContactManagerImpl implements ContactManager {
 						Calendar date = Calendar.getInstance();
 						date.setTime(dateFormat.parse(fields[2]));
 						
-						Meeting meeting = new MeetingImpl(
+						PastMeeting meeting = new MeetingImpl(
 								Integer.parseInt(fields[1]),
 								attendees,
-								date);
+								date,
+								fields[3]);
+						this.meetings.add((Meeting) meeting);
 						// TODO add notes
 						//PastMeeting pastMeeting = (PastMeeting) meeting;
 						//pastMeeting.addNotes(fields[3]);
