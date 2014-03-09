@@ -101,7 +101,7 @@ public class ContactManagerImpl implements ContactManager {
 						 * the empty string created by the trailing comma
 						 * during flush()ing
 						 */
-						for (int i = 0; i < strIds.length - 1; i++) {
+						for (int i = 0; i < strIds.length; i++) {
 							if (!contactIdMap.containsKey(Integer.parseInt(strIds[i]))) {
 								throw new IllegalArgumentException("Error parsing id " + strIds[i]);
 							} else {
