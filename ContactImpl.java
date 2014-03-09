@@ -10,34 +10,6 @@ public class ContactImpl implements Contact {
 	private String name;
 	private String notes;
 
-	// static field to generate and ensure unique IDs
-	private static int count = 0;
-
-	/**
-	 * Constructor
-	 *
-	 * @param name contact name
-	 */
-	public ContactImpl(String name) {
-		this.id = count;
-		count++;
-		this.name = name;
-		this.notes = null;
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @param name contact name
-	 * @param notes notes about contact
-	 */
-	public ContactImpl(String name, String notes) {
-		this.id = count;
-		count++;
-		this.name = name;
-		this.notes = notes;
-	}
-
 	/**
 	 * Constructor
 	 *
@@ -50,7 +22,6 @@ public class ContactImpl implements Contact {
 		this.name = name;
 		this.notes = notes;
 	}
-
 
 	/**
 	* Returns the ID of the contact
