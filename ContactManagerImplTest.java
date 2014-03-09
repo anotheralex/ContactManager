@@ -539,6 +539,7 @@ public class ContactManagerImplTest {
 		assertTrue(lm.isEmpty());
 	}
 
+	/*
 	@Test
 	public void flushTest() {
 		ContactManager cm = new ContactManagerImpl();
@@ -558,5 +559,6 @@ public class ContactManagerImplTest {
 
 		cm.flush();
 	}
+	*/
 
 }
