@@ -538,27 +538,4 @@ public class ContactManagerImplTest {
 		List<Meeting> lm = manager.getFutureMeetingList(date);
 		assertTrue(lm.isEmpty());
 	}
-
-	/*
-	@Test
-	public void flushTest() {
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("Name 1", "Notes 1");
-		cm.addNewContact("Name 2", "Notes 2");
-
-		Set<Contact> contacts = cm.getContacts(0, 1);
-
-		Calendar past = Calendar.getInstance();
-		past.set(2013, 1, 1);
-
-		Calendar future = Calendar.getInstance();
-		future.set(2015, 1, 1);
-
-		cm.addNewPastMeeting(contacts, past, "Meeting notes");
-		cm.addFutureMeeting(contacts, future);
-
-		cm.flush();
-	}
-	*/
-
 }
