@@ -6,7 +6,7 @@
 */
 public class ContactImpl implements Contact {
 
-	private int id; // first contact has id 0
+	private int id;
 	private String name;
 	private String notes;
 
@@ -41,7 +41,7 @@ public class ContactImpl implements Contact {
 	/**
 	 * Constructor
 	 *
-	 * @param di contact id
+	 * @param id contact id
 	 * @param name contact name
 	 * @param notes notes about contact
 	 */
