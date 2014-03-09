@@ -14,38 +14,46 @@ public class MeetingImplTest {
 	private Set<Contact> contacts;
 	private Contact contact;
 	private Calendar date;
+	private int id;
 
 	@Before
 	public void setup() {
-		contact = new ContactImpl("Contact");
+		contact = new ContactImpl(0, "Contact", "Notes");
 		contacts = new HashSet<Contact>();
 		contacts.add(contact);
 
-		date = new GregorianCalendar(2013, 01, 01);
+		//date = new GregorianCalendar(2013, 01, 01);
+		date = Calendar.getInstance();
+		id = 0;
 
-		meeting = new MeetingImpl(contacts, date);
+		meeting = new MeetingImpl(id , contacts, date);
 	}
 
 	@Test
 	public void getIdTest() {
 
-		Calendar date = new GregorianCalendar(2013, 01, 01);
+		/*
+		//Calendar date = new GregorianCalendar(2013, 01, 01);
+		date = Calender.getInstance();
 
-		Contact contact1 = new ContactImpl("Contact1");
-		Contact contact2 = new ContactImpl("Contact2");
+		Contact contact1 = new ContactImpl(1, "Contact1");
+		Contact contact2 = new ContactImpl(2, "Contact2");
 
 		Set<Contact> contacts1 = new HashSet<Contact>();
 		contacts1.add(contact1);
-		
-		Meeting meeting1 = new MeetingImpl(contacts1, date);
+		*/
 
+		Meeting m = new MeetingImpl(1, contacts, date);
+
+		/*
 		Set<Contact> contacts2 = new HashSet<Contact>();
 		contacts2.add(contact2);
 
 		Meeting meeting2 = new MeetingImpl(contacts2, date);
+		*/
 
 		int expected = 1;
-		int actual = meeting2.getId() - meeting1.getId();
+		int actual = m.getId();
 
 		assertEquals(expected, actual);
 	}
@@ -60,6 +68,7 @@ public class MeetingImplTest {
 	@Test
 	public void getContactsTest() {
 
+		/*
 		Calendar date = new GregorianCalendar(2013, 01, 01);
 
 		Contact contact1 = new ContactImpl("Contact1");
@@ -68,12 +77,13 @@ public class MeetingImplTest {
 		Set<Contact> contacts1 = new HashSet<Contact>();
 		contacts1.add(contact1);
 		contacts1.add(contact2);
-		
-		Meeting meeting1 = new MeetingImpl(contacts1, date);
+		*/
 
-		Set<Contact> actual = meeting1.getContacts();
+		Meeting m = new MeetingImpl(0, contacts, date);
 
-		Set<Contact> expected = contacts1;
+		Set<Contact> actual = m.getContacts();
+
+		Set<Contact> expected = contacts;
 
 		assertEquals(expected, actual);
 
