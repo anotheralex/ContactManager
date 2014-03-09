@@ -151,7 +151,6 @@ public class ContactManagerImpl implements ContactManager {
 		}
 	}
 
-	/*
 	public static void main(String[] args) {
 		ContactManagerImpl cm = new ContactManagerImpl();
 		cm.launch();
@@ -179,7 +178,6 @@ public class ContactManagerImpl implements ContactManager {
 		this.flush();
 
 	}
-	*/
 
 	/**
 	* Add a new meeting to be held in the future
