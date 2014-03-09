@@ -52,9 +52,7 @@ public class ContactManagerImplTest {
 		cm.addNewContact("name", "notes");
 		cm.addNewContact("name", "notes");
 		
-		Set<Contact> contacts = new HashSet<>();
-		
-		contacts = cm.getContacts(0);
+		Set<Contact> contacts = cm.getContacts(0);
 		int expected = 1;
 		int actual = contacts.size();
 		assertEquals(expected, actual);
@@ -71,9 +69,7 @@ public class ContactManagerImplTest {
 		cm.addNewContact("name", "notes");
 		cm.addNewContact("name", "notes");
 		
-		Set<Contact> contacts = new HashSet<>();
-		
-		contacts = cm.getContacts(3);
+		Set<Contact> contacts = cm.getContacts(3);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -83,9 +79,8 @@ public class ContactManagerImplTest {
 		cm.addNewContact("name", "notes");
 		cm.addNewContact("nam1", "notes");
 		
-		Set<Contact> contacts = new HashSet<>();
 		String name = null;
-		contacts = cm.getContacts(name);
+		Set<Contact> contacts = cm.getContacts(name);
 	}
 
 	@Test
@@ -95,8 +90,7 @@ public class ContactManagerImplTest {
 		cm.addNewContact("name", "notes");
 		cm.addNewContact("nam1", "notes");
 		
-		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts("name");
+		Set<Contact> contacts = cm.getContacts("name");
 
 		int expected = 2;
 		int actual = contacts.size();
@@ -105,29 +99,17 @@ public class ContactManagerImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addFutureMeetingTestFutureDate() {
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
-		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts(0, 1);
+		Set<Contact> contacts = manager.getContacts(0, 1);
 
 		Calendar past = Calendar.getInstance();
 		past.set(2013, 1, 1);
 
-		cm.addFutureMeeting(contacts, past);
+		manager.addFutureMeeting(contacts, past);
 	}
 
 	@Test
 	public void addFutureMeetingTestNormal() {
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
-		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts(0, 1);
+		Set<Contact> contacts = manager.getContacts(0, 1);
 
 		Calendar future1 = Calendar.getInstance();
 		future1.set(2015, 1, 1);
@@ -135,8 +117,8 @@ public class ContactManagerImplTest {
 		Calendar future2 = Calendar.getInstance();
 		future2.set(2016, 1, 1);
 		
-		int i = cm.addFutureMeeting(contacts, future1);
-		int j = cm.addFutureMeeting(contacts, future2);
+		int i = manager.addFutureMeeting(contacts, future1);
+		int j = manager.addFutureMeeting(contacts, future2);
 
 		assertEquals(0, i);
 		assertEquals(1, j);
@@ -247,63 +229,41 @@ public class ContactManagerImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void addNewPastMeetingNullNotes() {
-
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
-		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts(0, 1);
+		Set<Contact> contacts = manager.getContacts(0, 1);
 
 		Calendar past = Calendar.getInstance();
 		past.set(2013, 1, 1);
 
 		String notes = null;
-		cm.addNewPastMeeting(contacts, past, notes);
+		manager.addNewPastMeeting(contacts, past, notes);
 
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void addNewPastMeetingNullDate() {
-
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
-		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts(0, 1);
+		Set<Contact> contacts = manager.getContacts(0, 1);
 
 		Calendar past = null;
 
 		String notes = "notes";
-		cm.addNewPastMeeting(contacts, past, notes);
+		manager.addNewPastMeeting(contacts, past, notes);
 
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void addNewPastMeetingNullContacts() {
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
 		Set<Contact> contacts = null;
 
 		Calendar past = Calendar.getInstance();
 		past.set(2013, 1, 1);
 
 		String notes = "notes";
-		cm.addNewPastMeeting(contacts, past, notes);
+
+		manager.addNewPastMeeting(contacts, past, notes);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addNewPastMeetingNoAttendees() {
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
 		// create empty set of attendees
 		Set<Contact> attendees = new HashSet<>();
 
@@ -311,19 +271,13 @@ public class ContactManagerImplTest {
 		past.set(2013, 1, 1);
 
 		String notes = "notes";
-		cm.addNewPastMeeting(attendees, past, notes);
+
+		manager.addNewPastMeeting(attendees, past, notes);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addNewPastMeetingUnknownAttendee() {
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
-		// create empty set of attendees
-		Set<Contact> attendees = new HashSet<>();
-		attendees = cm.getContacts(0);
+		Set<Contact> attendees = manager.getContacts(0);
 
 		Contact unknown = new ContactImpl(99, "Unknown", "notes");
 		attendees.add(unknown);
@@ -333,35 +287,24 @@ public class ContactManagerImplTest {
 
 		String notes = "notes";
 
-		cm.addNewPastMeeting(attendees, past, notes);
+		manager.addNewPastMeeting(attendees, past, notes);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addMeetingNotesTestNoMeetingWithId() {
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-	
 		// try to add notes to non-existant meeting
-		cm.addMeetingNotes(1, "text");
+		manager.addMeetingNotes(1, "text");
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void addMeetingNotesMeetingInFuture() {
-		// instantiate a ContactManager object, add Contacts
-		ContactManager cm = new ContactManagerImpl();
-		cm.addNewContact("name", "notes");
-		cm.addNewContact("name", "notes");
-		
-		Set<Contact> contacts = new HashSet<>();
-		contacts = cm.getContacts(0, 1);
+		Set<Contact> contacts = manager.getContacts(0, 1);
 
 		Calendar future = Calendar.getInstance();
 		future.set(2015, 1, 1);
 
-		cm.addFutureMeeting(contacts, future);
-		cm.addMeetingNotes(0, "text");
+		manager.addFutureMeeting(contacts, future);
+		manager.addMeetingNotes(0, "text");
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -538,4 +481,5 @@ public class ContactManagerImplTest {
 		List<Meeting> lm = manager.getFutureMeetingList(date);
 		assertTrue(lm.isEmpty());
 	}
+
 }
